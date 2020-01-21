@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dg="clr-namespace:Xamarin.Forms.DataGrid;assembly=Xamarin.Forms.DataGrid"
+             xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
+             x:Class="VeloNSK.UsersСontrolPage">
+    <!--Стили-->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Head_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Subtitle" />
+            </Style>
+            <Style x:Key="Head_Button" TargetType="Button">
+                <Setter Property="Margin" Value="0,10,20,20" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="WidthRequest" Value="300" />
+                <Setter Property="HeightRequest" Value="70" />
+            </Style>
+            <Style x:Key="Slider_Imagrs" TargetType="Image">
+                <Setter Property="WidthRequest" Value="200" />
+                <Setter Property="HeightRequest" Value="200" />
+                <Setter Property="Margin" Value="5,0,5,0" />
+                <!--Left, Top, Right, Bottom-->
+            </Style>
+            <Style x:Key="Slider_Button" TargetType="Button">
+                <Setter Property="Margin" Value="5,20,5,20" />
+            </Style>
+            <Style x:Key="Bottom_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" x:Name="Main_RowDefinition_Ziro" />
+            <RowDefinition Height="*" x:Name="Main_RowDefinition_One" />
+            <RowDefinition Height="40" x:Name="Main_RowDefinition_Three" />
+        </Grid.RowDefinitions>
+        <Image x:Name="image_fon" Grid.RowSpan="3" Aspect="Fill" />
+        <!--Шапка-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="130" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
+            <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
+            <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
+            <Button x:Name="Back_Button" Text = "Back" Margin="10,10,0,10" Style="{StaticResource Head_Button}" />
+        </Grid>
+        <!--Блок грид-->
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" x:Name="YesRecords" />
+                <RowDefinition Height="0" x:Name="NoRecords" />
+                <RowDefinition Height="0" x:Name="RowDefinitionActivity" />
+            </Grid.RowDefinitions>
+            <Label x:Name="Name_Lable" Text="Дистанции" FontAttributes="Bold" Style="{StaticResource Head_Lable}" TextColor="Black" />
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+                <Button Text="Добавить" x:Name="btnAddRecord" Margin="10,0,10,10" />
+                <Button Text="Импортировать"  Grid.Column="1" x:Name="btnImport" Margin="0,0,10,10" />
+                <Button Text="Экспортировать"  Grid.Column="2" x:Name="btnAddExport" Margin="0,0,10,10" />
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Entry  x:Name="PoiskLogin" FontAttributes="Bold" HorizontalTextAlignment="Center" Margin="10,0,10,0"  Placeholder="+7(999) 999-99-99">
+                        <Entry.Behaviors>
+                            <Behaviors:MaskedBehavior Mask="+7(XXX) XXX-XX-XX" />
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Entry x:Name="PoiskRol" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по роли" Grid.Column="1" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskName" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по имени" Keyboard="Numeric" Grid.Column="2" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskFam" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по фамилии" Grid.Column="3" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskPatronimic" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по отчеству" Grid.Column="4" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskYars" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по возрасту" Keyboard="Numeric" Grid.Column="5" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskEmail" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по E-mail" Grid.Column="6" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskPol" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="Поиск по по полу" Grid.Column="7" Margin="10,0,10,0" />
+                    <Entry x:Name="PoiskStatusHels" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по здоровью" Keyboard="Numeric" Grid.Column="8" Margin="10,0,10,0" />
+
+                    <dg:DataGrid x:Name="lstData"  SelectionEnabled="True" Grid.ColumnSpan="9" Grid.Row="1"
+						     RowHeight="70" HeaderHeight="50" BorderColor="#CCCCCC" HeaderBackground="#E0E6F8" ActiveRowColor="#8899AA">
+                        <x:Arguments>
+                            <ListViewCachingStrategy>RetainElement</ListViewCachingStrategy>
+                        </x:Arguments>
+                        <dg:DataGrid.HeaderFontSize>
+                            <OnIdiom  x:TypeArguments="x:Double">
+                                <OnIdiom.Tablet>15</OnIdiom.Tablet>
+                                <OnIdiom.Phone>12</OnIdiom.Phone>
+                            </OnIdiom>
+                        </dg:DataGrid.HeaderFontSize>
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridColumn Title="Login" PropertyName="Login" Width="150" />
+                            <dg:DataGridColumn Title="E-mail" PropertyName="Email" Width="150" />
+                            <dg:DataGridColumn Title="Роль" PropertyName="Rol" Width="70" />
+                            <dg:DataGridColumn Title="Имя" PropertyName="Name"  Width="100" />
+                            <dg:DataGridColumn Title="Фамилия" PropertyName="Fam" Width="100" />
+                            <dg:DataGridColumn Title="Отчество" PropertyName="Patronimic" Width="100" />
+                            <dg:DataGridColumn Title="Возраст" PropertyName="Years"  Width="*" />
+                            <dg:DataGridColumn Title="Пол" PropertyName="Isman" Width="*" />
+                            <dg:DataGridColumn Title="Статус здоровья" PropertyName="NameHealth" Width="*" />
+                        </dg:DataGrid.Columns>
+                        <dg:DataGrid.RowsBackgroundColorPalette>
+                            <dg:PaletteCollection>
+                                <Color>#F2F2F2</Color>
+                                <Color>#FFFFFF</Color>
+                            </dg:PaletteCollection>
+                        </dg:DataGrid.RowsBackgroundColorPalette>
+                    </dg:DataGrid>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label x:Name="NoRecord_Lable" Text="Записей с такими параметрами не найдено" TextColor="Black" FontSize="Subtitle" Style="{StaticResource Bottom_Lable}" />
+            </Grid>
+            <ActivityIndicator Grid.Row="4"  x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
+        </Grid>
+
+        <!--Подвал-->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <BoxView BackgroundColor="#0079d8" />
+            <Label Text="VeloNSK" Style="{StaticResource Bottom_Lable}" />
+        </Grid>
+    </Grid>
+</ContentPage>

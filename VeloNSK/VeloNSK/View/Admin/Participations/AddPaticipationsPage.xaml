@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
+             mc:Ignorable="d"
+             x:Class="VeloNSK.View.Admin.Participations.AddPaticipationsPage">
+    <!--Стили-->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Head_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Header" />
+            </Style>
+            <Style x:Key="Main_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Small" />
+            </Style>
+            <Style x:Key="Main_Entry" TargetType="Entry">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Small" />
+            </Style>
+            <Style x:Key="Bottom_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+            <Style x:Key="Head_Button" TargetType="Button">
+                <Setter Property="Margin" Value="10,10,20,20" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="WidthRequest" Value="300" />
+                <Setter Property="HeightRequest" Value="70" />
+            </Style>
+            <Style x:Key="Error_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="Red" />
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="Margin" Value="10,0,0,0" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView Margin="0,20,0,20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.2" x:Name="Login_RowDefinition_Ziro" />
+                <RowDefinition Height="4*" x:Name="Login_RowDefinition_One" />
+                <RowDefinition Height="0.2" x:Name="Login_RowDefinition_Two" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1" Grid.Column="1" x:Name="GridMain">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="150" />
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="20" />
+                </Grid.RowDefinitions>
+                <Image x:Name="Users_Fon_Images" Aspect="Fill" Opacity="0.8" Grid.ColumnSpan="2" Grid.RowSpan="9" />
+                <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Запись на соревнование" Style="{StaticResource Head_Lable}" />
+
+                <!--Блок-->
+                <Label Grid.Row ="1" Text="Поиск пользователя: " Style="{StaticResource Main_Lable}" />
+                <Entry Grid.Row ="1" Grid.Column="1" x:Name="PoiskLogin" FontAttributes="Bold" HorizontalTextAlignment="Center" Margin="10,0,10,0"  Placeholder="+7(XXX) XXX-XX-XX">
+                    <Entry.Behaviors>
+                        <Behaviors:MaskedBehavior Mask="+7(XXX) XXX-XX-XX" />
+                    </Entry.Behaviors>
+                </Entry>
+                <Label Grid.Row ="2" Text="Пользователь: " Style="{StaticResource Main_Lable}" />
+
+                <Label Grid.Row ="3" Text="Поиск по компетенции: " Style="{StaticResource Main_Lable}" />
+                <Entry Grid.Row ="3" Grid.Column="1" x:Name="PoiskCompetentions" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по дистанции" Margin="10,0,10,0" />
+
+                <Label Grid.Row ="4" Text="Компетенция: " Style="{StaticResource Main_Lable}" />
+                <Label Grid.Row ="5" Text="Выбор даты: " Style="{StaticResource Main_Lable}" />
+
+                <Label Grid.Row ="6" Text="Верифицирован: " Style="{StaticResource Main_Lable}" />
+                <CheckBox Grid.Row ="6" Grid.Column="1" x:Name="Autentification_CheckBox" VerticalOptions="Center" HorizontalOptions="Start" Margin="10,0,0,0" />
+
+                <Editor x:Name="Info_Editor" Grid.Row="7" Grid.ColumnSpan="2" Margin="10" BackgroundColor="White" HeightRequest="200" />
+
+                <!--Блок кнопок-->
+                <Grid Grid.Row="8" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Button Grid.Column="1" x:Name="Registrations_Button" Text = "Далее" Style="{StaticResource Head_Button}" />
+                    <Button x:Name="Back_Button" Text = "Отмена" Style="{StaticResource Head_Button}" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </ScrollView>
+</ContentPage>

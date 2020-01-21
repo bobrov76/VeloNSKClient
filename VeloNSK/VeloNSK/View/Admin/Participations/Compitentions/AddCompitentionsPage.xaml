@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="VeloNSK.View.Admin.Participations.Compitentions.AddCompitentionsPage">
+    <!--Стили-->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Head_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Header" />
+            </Style>
+            <Style x:Key="Main_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="End" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Small" />
+            </Style>
+            <Style x:Key="Main_Entry" TargetType="Entry">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Small" />
+            </Style>
+            <Style x:Key="Bottom_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+            <Style x:Key="Head_Button" TargetType="Button">
+                <Setter Property="Margin" Value="10,10,20,20" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="WidthRequest" Value="300" />
+                <Setter Property="HeightRequest" Value="70" />
+            </Style>
+            <Style x:Key="Error_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="Red" />
+                <Setter Property="HorizontalTextAlignment" Value="Start" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="Margin" Value="10,0,0,0" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" x:Name="Login_RowDefinition_Ziro" />
+                <RowDefinition Height="280" x:Name="Login_RowDefinition_One" />
+                <RowDefinition Height="*" x:Name="Login_RowDefinition_Two" />
+            </Grid.RowDefinitions>
+            <Image x:Name="image_fon" Grid.RowSpan="3" Grid.ColumnSpan="3" Aspect="Fill" />
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="70" />
+                    <RowDefinition Height="20" />
+                </Grid.RowDefinitions>
+                <Image x:Name="Users_Fon_Images" Aspect="Fill" Opacity="0.8" Grid.ColumnSpan="2" Grid.RowSpan="6" />
+                <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Добавление компетенции" FontSize="Medium" Style="{StaticResource Head_Lable}" />
+
+                <!--Блок-->
+                <Label Grid.Row="1" x:Name="Name_Lable" Text="Название дистанции: " Style="{StaticResource Main_Lable}" />
+                <StackLayout Grid.Row="1" Grid.Column="1" x:Name="Name_Picer" Margin="10,0,10,0" />
+
+                <Label x:Name="label" Grid.Row="3" Text="Выберите дату: " Style="{StaticResource Main_Lable}" />
+                <Grid Grid.Row="3" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <DatePicker Grid.Column="1" x:Name="Time_Picrt" FlowDirection="MatchParent" WidthRequest="50" Format="D" />
+                </Grid>
+                <!--Блок кнопок-->
+                <Grid Grid.Row="4" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Button Grid.Column="1" x:Name="Registrations_Button" Text = "Далее" Style="{StaticResource Head_Button}" />
+                    <Button x:Name="Back_Button" Text = "Отмена" Style="{StaticResource Head_Button}" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
+             mc:Ignorable="d"
+             x:Class="VeloNSK.View.Admin.Participations.PartisipantPage">
+    <!--Стили-->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Head_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="Subtitle" />
+            </Style>
+            <Style x:Key="Head_Button" TargetType="Button">
+                <Setter Property="Margin" Value="0,10,20,20" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="WidthRequest" Value="300" />
+                <Setter Property="HeightRequest" Value="70" />
+            </Style>
+            <Style x:Key="Slider_Imagrs" TargetType="Image">
+                <Setter Property="WidthRequest" Value="200" />
+                <Setter Property="HeightRequest" Value="200" />
+                <Setter Property="Margin" Value="5,0,5,0" />
+                <!--Left, Top, Right, Bottom-->
+            </Style>
+            <Style x:Key="Slider_Button" TargetType="Button">
+                <Setter Property="Margin" Value="5,20,5,20" />
+            </Style>
+            <Style x:Key="Bottom_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" x:Name="Main_RowDefinition_Ziro" />
+            <RowDefinition Height="*" x:Name="Main_RowDefinition_One" />
+            <RowDefinition Height="0" x:Name="Main_RowDefinition_Activity" />
+            <RowDefinition Height="40" x:Name="Main_RowDefinition_Three" />
+        </Grid.RowDefinitions>
+        <!--Шапка-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="130" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
+            <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
+            <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
+            <Button x:Name="Back_Button" Text = "Back" Margin="10,10,0,10" Style="{StaticResource Head_Button}" />
+        </Grid>
+        <!--Блок управления-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="60" />
+                <RowDefinition Height="60" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <!--<BoxView BackgroundColor="#CCCCCC" Grid.Row="3" />-->
+            <Label x:Name="Name_Lable" Text="Дистанции" FontAttributes="Bold" Style="{StaticResource Head_Lable}" TextColor="Black" />
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Button Text="Добавить" x:Name="btnAddRecord" Margin="10,0,10,10" />
+                <Button Text="Импортировать"  Grid.Column="1" x:Name="btnImport" Margin="0,0,10,10" />
+                <Button Text="Экспортировать"  Grid.Column="2" x:Name="btnAddExport" Margin="0,0,10,10" />
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Login" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                    <Button Text="↓"  x:Name="rotate_login" HorizontalOptions="End"  VerticalOptions="Center" Grid.Column="1" WidthRequest="40" HeightRequest="40">
+                        <Button.BorderRadius>
+                            <OnIdiom x:TypeArguments="x:Int32" Phone="20" Tablet="20" Desktop="20" />
+                        </Button.BorderRadius>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Имя пользователя" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                    <Button Text="↓"  x:Name="rotate_name" HorizontalOptions="End"  VerticalOptions="Center" Grid.Column="1" WidthRequest="40" HeightRequest="40">
+                        <Button.BorderRadius>
+                            <OnIdiom x:TypeArguments="x:Int32" Phone="20" Tablet="20" Desktop="20" />
+                        </Button.BorderRadius>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Название дистанции" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                    <Button Text="↓"  x:Name="rotate_distanse" HorizontalOptions="End"  VerticalOptions="Center" Grid.Column="1" WidthRequest="40" HeightRequest="40">
+                        <Button.BorderRadius>
+                            <OnIdiom x:TypeArguments="x:Int32" Phone="20" Tablet="20" Desktop="20" />
+                        </Button.BorderRadius>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Дата проведения" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                    <Button Text="↓"  x:Name="rotate_date" HorizontalOptions="End"  VerticalOptions="Center" Grid.Column="1" WidthRequest="40" HeightRequest="40">
+                        <Button.BorderRadius>
+                            <OnIdiom x:TypeArguments="x:Int32" Phone="20" Tablet="20" Desktop="20" />
+                        </Button.BorderRadius>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Возрастная категория" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                    <Button Text="↓"  x:Name="rotate_yars" HorizontalOptions="End"  VerticalOptions="Center" Grid.Column="1" WidthRequest="40" HeightRequest="40">
+                        <Button.BorderRadius>
+                            <OnIdiom x:TypeArguments="x:Int32" Phone="20" Tablet="20" Desktop="20" />
+                        </Button.BorderRadius>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Статус верификации" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" />
+                    <Button Text="↓"  x:Name="rotate_verificate" HorizontalOptions="End"  VerticalOptions="Center" Grid.Column="1" WidthRequest="40" HeightRequest="40">
+                        <Button.BorderRadius>
+                            <OnIdiom x:TypeArguments="x:Int32" Phone="20" Tablet="20" Desktop="20" />
+                        </Button.BorderRadius>
+                    </Button>
+                </Grid>
+
+                <Entry x:Name="PoiskLogin" FontAttributes="Bold" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="10,0,10,0" Keyboard="Numeric" Placeholder="+7(XXX) XXX-XX-XX">
+                    <Entry.Behaviors>
+                        <Behaviors:MaskedBehavior Mask="+7(XXX) XXX-XX-XX" />
+                    </Entry.Behaviors>
+                </Entry>
+                <Entry x:Name="PoiskNameUser" FontAttributes="Bold" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="10,0,10,0" />
+                <Entry x:Name="PoiskDistans" FontAttributes="Bold" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="2" Margin="10,0,10,0" />
+                <Entry FontAttributes="Bold" HorizontalTextAlignment="Center"  x:Name="PoiskDate" Grid.Row="1" Grid.Column="3" Keyboard="Numeric" Placeholder="XX.XX.XXXX">
+                    <Entry.Behaviors>
+                        <Behaviors:MaskedBehavior Mask="26.12.1999" />
+                    </Entry.Behaviors>
+                </Entry>
+                <Entry x:Name="PoiskYars" FontAttributes="Bold" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="4" Margin="10,0,10,0" />
+                <Entry x:Name="PoiskVerificate" FontAttributes="Bold" HorizontalTextAlignment="Center" Grid.Row="1" Grid.Column="5" Margin="10,0,10,0" />
+            </Grid>
+        </Grid>
+        <!--Подвал-->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <BoxView BackgroundColor="#0079d8" />
+            <Label x:Name="Bottom_Lable" Text="VeloNSK" Style="{StaticResource Bottom_Lable}" />
+        </Grid>
+    </Grid>
+</ContentPage>

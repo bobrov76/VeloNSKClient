@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="VeloNSK.MainPage" x:Name="Fon" SizeChanged="SizeChanged">
+    <!--Стили-->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Head_Lable" TargetType="Label">
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="FontSize" Value="Subtitle"/>
+            </Style>
+            <Style x:Key="Head_Button" TargetType="Button">
+                <Setter Property="Margin" Value="0,10,20,20"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="WidthRequest" Value="300"/>
+                <Setter Property="HeightRequest" Value="70"/>
+            </Style>
+            <Style x:Key="Slider_Imagrs" TargetType="Image">
+                <Setter Property="WidthRequest" Value="200"/>
+                <Setter Property="HeightRequest" Value="200"/>
+                <Setter Property="Margin" Value="5,0,5,0"/>
+                <!--Left, Top, Right, Bottom-->
+            </Style>
+            <Style x:Key="Slider_Button" TargetType="Button">
+                <Setter Property="Margin" Value="5,20,5,20"/>
+            </Style>
+            <Style x:Key="Bottom_Lable" TargetType="Label">
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" x:Name="Main_ColumnDefinition_Ziro"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" x:Name="Main_RowDefinition_Ziro"/>
+            <RowDefinition Height="*" x:Name="Main_RowDefinition_One"/>
+            <RowDefinition Height="6*" x:Name="Main_RowDefinition_Two"/>
+            <RowDefinition Height="*" x:Name="Main_RowDefinition_Three"/>
+            <RowDefinition Height="200" x:Name="Main_RowDefinition_Fore"/>
+            <RowDefinition Height="40" x:Name="Main_RowDefinition_Five"/>
+        </Grid.RowDefinitions>
+        <Image x:Name="image_fon" Grid.RowSpan="6" Aspect="Fill"/>
+            <!--Шапка-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8"/>
+            <Image x:Name="Head_Image"  Aspect="Fill" />
+            <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}"/>
+            <Button Grid.Column="2" x:Name="Head_Button" Text = "Login" Style="{StaticResource Head_Button}"/>
+        </Grid>
+        <!--Блок кнопок-->
+        <FlexLayout Grid.Row="2" Direction="Column" AlignItems="Center" AlignContent="SpaceEvenly">
+            <Button x:Name="Block_Button_One" Text = "Стать участником" Style="{StaticResource Head_Button}"/>
+            <Button x:Name="Block_Button_Tho" Text = "Я участник" Style="{StaticResource Head_Button}"/>
+            <Button x:Name="Block_Button_Three" Text = "Узнать по проекте" Style="{StaticResource Head_Button}"/>
+        </FlexLayout>
+        <!--Слайдер-->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Text = "◀" Style="{StaticResource Slider_Button}" x:Name="Slider_Left_Bt"/>
+            <FlexLayout Grid.Column="1" Direction="Row" Wrap="Wrap" JustifyContent="Center" HorizontalOptions="Start">
+                <Image x:Name="Slid0" Style="{StaticResource  Slider_Imagrs}" />
+                <Image x:Name="Slid1" Style="{StaticResource Slider_Imagrs}" />
+                <Image x:Name="Slid2" Style="{StaticResource Slider_Imagrs}" />
+                <Image x:Name="Slid3" Style="{StaticResource Slider_Imagrs}" />
+                <Image x:Name="Slid4" Style="{StaticResource Slider_Imagrs}" />
+                <Image x:Name="Slid5" Style="{StaticResource Slider_Imagrs}" />
+            </FlexLayout>
+            <Button Grid.Column="2" Text = "▶" Style="{StaticResource Slider_Button}" HorizontalOptions="End" x:Name="Slider_Right_Bt"/>
+        </Grid>
+        <!--Подвал-->
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <BoxView BackgroundColor="#0079d8"/>
+            <Label x:Name="Bottom_Lable" Text="VeloNSK" Style="{StaticResource Bottom_Lable}"/>
+        </Grid>
+    </Grid>
+</ContentPage>
+
