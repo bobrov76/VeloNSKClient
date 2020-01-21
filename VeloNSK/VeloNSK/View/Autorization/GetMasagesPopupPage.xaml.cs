@@ -18,25 +18,32 @@ namespace VeloNSK
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GetMasagesPopupPage : PopupPage
     {
-        links picture_lincs = new links();
-        MessagingAPI messagingAPI = new MessagingAPI();
-        ConnectClass connectClass = new ConnectClass();
+        private links picture_lincs = new links();
+        private MessagingAPI messagingAPI = new MessagingAPI();
+        private ConnectClass connectClass = new ConnectClass();
+
         public GetMasagesPopupPage()
         {
             InitializeComponent();
 
-            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы            
+            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            OctocatImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse()+ "masage_picture.png");
+            OctocatImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "masage_picture.png");
             CloseImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "close_circle_button.png");
             GetMasageButton.Clicked += (s, e) => SetMail();
         }
-        public async Task Connect_ErrorAsync() { await Navigation.PushModalAsync(new ErrorConnectPage()); }
+
+        public async Task Connect_ErrorAsync()
+        {
+            await Navigation.PushModalAsync(new ErrorConnectPage());
+        }
+
         private void SetMail()//Отправка письма
         {
             messagingAPI.SendEmail("velo.nsk2020@mail.ru", "Письмо от пользователя", MasageEditor.Text);
         }
+
         protected override void OnAppearingAnimationBegin()
         {
             base.OnAppearingAnimationBegin();
@@ -51,7 +58,6 @@ namespace VeloNSK
 
                 GetMasageButton.Scale = 1;
                 GetMasageButton.Opacity = 1;
-                
 
                 return;
             }
@@ -79,8 +85,7 @@ namespace VeloNSK
                 MasageEditor.FadeTo(1),
                 (new Func<Task>(async () =>
                 {
-                    await Task.Delay(200);                    
-
+                    await Task.Delay(200);
                 }))());
 
             await Task.WhenAll(
@@ -121,11 +126,6 @@ namespace VeloNSK
 
         private async void OnLogin(object sender, EventArgs e)
         {
-            var loadingPage = new GetMasagesPopupPage();
-            await Navigation.PushPopupAsync(loadingPage);
-            await Task.Delay(2000);
-            await Navigation.RemovePopupPageAsync(loadingPage);
-            await Navigation.PushPopupAsync(new GetMasagesPopupPage());
         }
 
         private void OnCloseButtonTapped(object sender, EventArgs e)

@@ -34,11 +34,12 @@ namespace VeloNSK.View.Autorization
         private ConnectClass connectClass = new ConnectClass();
         private bool animate;
         private RegularValidate regularValidate = new RegularValidate();
+        private string passwd = "";
 
         public DoubleAuthPage(int ID, string status)
         {
             InitializeComponent();
-            DisplayAlert("", ID.ToString(), "");
+            DisplayAlert("", ID.ToString(), "Ok");
             switch (status)
             {
                 case "ReplisPasswd": Name_Lable.Text = "Изменение пароля"; PinCode_Entry.IsVisible = false; break;
@@ -54,11 +55,48 @@ namespace VeloNSK.View.Autorization
             {
                 switch (status)
                 {
-                    case "ReplisPasswd": await ReplasePasswordAsync(ID); break;
-                    case "DobleOuth": await DoubleAuthAsync(ID); break;
+                    case "ReplisPasswd":
+                        await ReplasePasswordAsync(ID);
+                        await DisplayAlert("Уведомление", "Новый пароль отправлен на вашу почу", "Ok");
+                        CloseAllPopup();
+                        break;
+
+                    case "DobleOuth":
+                        await DoubleAuthAsync(ID);
+                        await DisplayAlert("Уведомление", "На вашу почту отправлен Pin-code для подтверждения авторизации", "Ok");
+                        break;
                 }
             };
-            //  Authenticatio_Password_Entry.TextChanged += async (s, e) => { await Authenticatio_Password_Entry_TextChangedAsync(); };
+            PinCode_Entry.TextChanged += async (s, e) =>
+           {
+               if (PinCode_Entry.Text.Length == 4)
+               {
+                   if (passwd == PinCode_Entry.Text)
+                   {
+                       alive = false;//Остановка таймера
+                       CloseAllPopup();
+                       await Task.Delay(2000);
+                       if (App.Current.Properties.TryGetValue("rol_user", out object rol_user))
+                       {
+                           switch (rol_user)
+                           {
+                               case "Admin":
+                                   await Navigation.PushModalAsync(new AdminPage(), animate);
+                                   break;
+
+                               case "User":
+                                   await Navigation.PushModalAsync(new UserPage(), animate);
+                                   break;
+                           }
+                       }
+                   }
+                   else
+                   {
+                       animations.Animations_Entry(PinCode_Entry);
+                       PinCode_Entry.Text = "";
+                   }
+               }
+           };
         }
 
         private async Task<string> ReplasePasswordAsync(int ID)
@@ -90,7 +128,6 @@ namespace VeloNSK.View.Autorization
 
         private async Task<string> DoubleAuthAsync(int ID)
         {
-            string passwd = "";
             if (regularValidate.Vadidation(Email_Entry.Text, @"(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)") == false)
             {
                 await DisplayAlert("Ошибка", "E-mail введен некорректно", "Ok");
@@ -102,38 +139,18 @@ namespace VeloNSK.View.Autorization
                 if (await GetClient(ID) == Email_Entry.Text)
                 {
                     passwd = await doubleAuthenticationService.Post(ID.ToString(), "DoubleAutentifity");
+                    passwd = passwd.Replace("\"", string.Empty).Trim();
                     alive = true;
                     start_time = DateTime.UtcNow;
                     endTime = start_time.AddMinutes(2);
                     Device.StartTimer(TimeSpan.FromSeconds(1), OnTimerTick);
                     PinCode_Entry.IsEnabled = true;
                     Email_Entry.IsEnabled = false;
-
-                    if (PinCode_Entry.Text.Length == 4)
-                    {
-                        if (passwd == PinCode_Entry.Text)
-                        {
-                            alive = false;//Остановка таймера
-
-                            if (App.Current.Properties.TryGetValue("rol_user", out object rol_user))
-                            {
-                                switch ((short)rol_user)
-                                {
-                                    case 1: await Navigation.PushModalAsync(new AdminPage()); break;
-                                    case 2: await Navigation.PushModalAsync(new UserPage()); break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            animations.Animations_Entry(PinCode_Entry);
-                            PinCode_Entry.Text = "";
-                        }
-                    }
+                    GetMasageButton.IsEnabled = false;
                 }
                 else
                 {
-                    await DisplayAlert("Ошибка", "Пользователя с таким логином не существует", "Ok");
+                    await DisplayAlert("Ошибка", "Пользователя с таким E-mail не существует", "Ok");
                 }
             }
             return "";
@@ -155,13 +172,14 @@ namespace VeloNSK.View.Autorization
         private bool OnTimerTick()//Обработка времени на выполнение
         {
             TimeSpan remainingTime = endTime - DateTime.UtcNow;
-            Timer_Lable.Text = (remainingTime.Minutes + ":" + remainingTime.Seconds).ToString();
+            Timer_Lable.Text = "Осталось: " + (remainingTime.Minutes + ":" + remainingTime.Seconds).ToString();
             if (remainingTime.Minutes == 0 && remainingTime.Seconds == 0)
             {
                 Timer_Lable.Text = "Время вышло попробуйте заново";
                 get_cod = "";
-                // Authenticatio_Password_Entry.IsEnabled = false;
-                // Email_Button.IsEnabled = true;
+                PinCode_Entry.Text = "";
+                PinCode_Entry.IsEnabled = false;
+                GetMasageButton.IsEnabled = true;
                 Email_Entry.IsEnabled = true;
                 return alive = false;
             }
@@ -201,7 +219,8 @@ namespace VeloNSK.View.Autorization
             var currentHeight = FrameContainer.Height;
 
             await Task.WhenAll(
-                //   MasageEditor.FadeTo(0),
+               Email_Entry.FadeTo(0),
+               PinCode_Entry.FadeTo(0),
                 GetMasageButton.FadeTo(0));
 
             FrameContainer.Animate("HideAnimation", d =>
@@ -219,25 +238,9 @@ namespace VeloNSK.View.Autorization
             await taskSource.Task;
         }
 
-        private async void OnLogin(object sender, EventArgs e)
-        {
-            var loadingPage = new GetMasagesPopupPage();
-            await Navigation.PushPopupAsync(loadingPage);
-            await Task.Delay(2000);
-            await Navigation.RemovePopupPageAsync(loadingPage);
-            await Navigation.PushPopupAsync(new GetMasagesPopupPage());
-        }
-
         private void OnCloseButtonTapped(object sender, EventArgs e)
         {
             CloseAllPopup();
-        }
-
-        protected override bool OnBackgroundClicked()
-        {
-            CloseAllPopup();
-
-            return false;
         }
 
         private async void CloseAllPopup()

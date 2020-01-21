@@ -65,27 +65,31 @@ namespace VeloNSK
             };
             tapGesture.Tapped += async (s, e) =>//Обработка касания
             {
-                if (Login_Entry.Text.Length == 17)
+                try
                 {
-                    if (await GetClient() != null)
+                    if (Login_Entry.Text.Length == 17 && Login_Entry.Text.Length > 0)
                     {
-                        Error_Password_Lable.TextColor = Color.Red;
-                        await Task.Delay(1000);
-                        int id = Convert.ToInt32(GetClient());
-                        await PopupNavigation.Instance.PushAsync(new DoubleAuthPage(id, "ReplisPasswd"));
+                        string id = await GetClient();
+                        if (id != null)
+                        {
+                            Error_Password_Lable.TextColor = Color.Red;
+                            await Task.Delay(300);
+                            await PopupNavigation.Instance.PushAsync(new DoubleAuthPage(Convert.ToInt32(id), "ReplisPasswd"));
+                        }
+                        else { await DisplayAlert("Ошибка", "Логин не указан,необходимо указать логин", "Ok"); }
                     }
-                    else { await DisplayAlert("Ошибка", "Логин не указан,необходимо указать логин", "Ok"); }
+                    else
+                    {
+                        await DisplayAlert("Предупреждение", "Необходимо указать логин", "Ok");
+                    }
                 }
-                else
-                {
-                    await DisplayAlert("Предупреждение", "Необходимо указать логин", "Ok");
-                }
+                catch { await DisplayAlert("Предупреждение", "Необходимо указать логин", "Ok"); }
             };
             Passwd_Lable.GestureRecognizers.Add(tapGesture);
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync();//Переход назад
             };
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };// обработка изменения состояния подключения
@@ -93,7 +97,7 @@ namespace VeloNSK
 
         public async Task Connect_ErrorAsync()
         {
-            DisplayAlert("", "Что то пошло нетак", "Ok");
+            await Navigation.PushModalAsync(new ErrorConnectPage(), animate);
         }
 
         public async Task<string> GetClient()
@@ -135,8 +139,11 @@ namespace VeloNSK
                         }
                         else
                         {
-                            int id = Convert.ToInt32(GetClient());
-                            await PopupNavigation.Instance.PushAsync(new DoubleAuthPage(id, "DobleOuth"));
+                            string id = await GetClient();
+                            if (id != null)
+                            {
+                                await PopupNavigation.Instance.PushAsync(new DoubleAuthPage(Convert.ToInt32(id), "DobleOuth"));
+                            }
                         }
                     }
                     else
@@ -152,9 +159,10 @@ namespace VeloNSK
                     Login_Button.IsEnabled = false;
                     alive = true;
                     start_time = DateTime.UtcNow;
-                    endTime = start_time.AddMinutes(1);
+                    endTime = start_time.AddSeconds(30); //AddMinutes(1);
                     Device.StartTimer(TimeSpan.FromSeconds(1), OnTimerTick);
                     double_out = true;
+                    Password_Entry.Text = "";
                 }
                 else if (count_click >= 2)
                 {
@@ -163,10 +171,11 @@ namespace VeloNSK
                 }
                 else if (count_click >= 0)
                 {
+                    Error_Password_RowDefinition.Height = 30;
                     Error_Password_Lable.Text = "Поле Login или пароль незаполно";
                 }
             }
-            catch { Error_Password_Lable.Text = "Поле Login или пароль незаполно"; }
+            catch { await DisplayAlert("Ошибка", "Поле Login или пароль незаполно", "Ok"); }
         }
 
         private bool OnTimerTick()//Обработка времени на выполнение
