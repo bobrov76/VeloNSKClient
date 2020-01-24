@@ -196,27 +196,13 @@ namespace VeloNSK
 
         private new void SizeChanged(object sender, EventArgs e) //Стилизация
         {
-            if (size_form.GetHeightSize() < 550) Login_RowDefinition_Two.Height = new GridLength(1, GridUnitType.Star);
-            if (size_form.GetHeightSize() > 550) Login_RowDefinition_Two.Height = new GridLength(2, GridUnitType.Star);
-
-            if (size_form.GetHeightSize() < 440) Login_RowDefinition_Two.Height = new GridLength(0.2, GridUnitType.Star);
-            if (size_form.GetHeightSize() > 450) Login_RowDefinition_Two.Height = new GridLength(1, GridUnitType.Star);
-
-            if (size_form.GetHeightSize() < 650) Login_RowDefinition_Ziro.Height = new GridLength(0.5, GridUnitType.Star);
-            if (size_form.GetHeightSize() > 650) Login_RowDefinition_Ziro.Height = new GridLength(1, GridUnitType.Star);
-
-            if (size_form.GetHeightSize() < 600) Login_RowDefinition_Ziro.Height = new GridLength(0.3, GridUnitType.Star);
-            if (size_form.GetHeightSize() > 600) Login_RowDefinition_Ziro.Height = new GridLength(0.5, GridUnitType.Star);
-
-            if (size_form.GetWidthSize() < 450)
+            if (size_form.GetHeightSize() > size_form.GetWidthSize())
             {
-                Login_ColumnDefinition_Ziro.Width = 10;
-                Login_ColumnDefinition_Two.Width = 10;
+                Login_ColumnDefinition_One.Width = new GridLength(4, GridUnitType.Star);
             }
-            if (size_form.GetWidthSize() > 450)
+            else
             {
-                Login_ColumnDefinition_Ziro.Width = new GridLength(1, GridUnitType.Star);
-                Login_ColumnDefinition_Two.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_One.Width = 400;
             }
         }
 

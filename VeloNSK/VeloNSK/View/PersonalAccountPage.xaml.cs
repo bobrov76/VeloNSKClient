@@ -26,10 +26,21 @@ namespace VeloNSK.View
         private bool animate;
         private int ID;
 
-        public PersonalAccountPage()
+        public PersonalAccountPage(int id, bool IsAdmin)
         {
             InitializeComponent();
-            Get();
+            Get(id);
+            if (IsAdmin)
+            {
+                Redact_Button.IsVisible = false;
+                Profile_Lable.Text = "Профиль участника";
+            }
+            else
+            {
+                Redact_Button.IsVisible = true;
+                Profile_Lable.Text = "Мой профиль";
+            }
+
             User_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
@@ -41,7 +52,7 @@ namespace VeloNSK.View
             Head_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Head_Button);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync();
             };
 
@@ -70,9 +81,9 @@ namespace VeloNSK.View
             }
         }
 
-        private async Task Get()
+        private async Task Get(int id)
         {
-            InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
+            InfoUser loginUsers = await registrationUsersService.Get_user_id(id);
             IEnumerable<UserHelth> userHelths = await registrationUsersService.get_hels_status();
             ID = loginUsers.IdUsers;
             if (loginUsers.Isman) { Pol_Lable.Text += "Мужской"; }
@@ -83,6 +94,7 @@ namespace VeloNSK.View
                 StatusHels_Lable.Text += userHelth.NameHealth;
             }
             FIO_Lable.Text += loginUsers.Fam + " " + loginUsers.Name + " " + loginUsers.Patronimic;
+            Yars_Lable.Text += loginUsers.Years;
             Email_Lable.Text += loginUsers.Email;
             Login_Lable.Text += loginUsers.Login;
             User_Image.Source = new UriImageSource

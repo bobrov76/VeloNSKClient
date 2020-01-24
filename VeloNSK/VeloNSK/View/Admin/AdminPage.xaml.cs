@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VeloNSK.APIServise.Model;
+using VeloNSK.APIServise.Servise;
 using VeloNSK.HelpClass.Connected;
 using VeloNSK.HelpClass.Style;
 using VeloNSK.View;
@@ -19,6 +21,7 @@ namespace VeloNSK
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AdminPage : ContentPage
     {
+        private LoginUsersService loginUsersService = new LoginUsersService();
         private links picture_lincs = new links();
         private ConnectClass connectClass = new ConnectClass();
         private Animations animations = new Animations();
@@ -39,7 +42,8 @@ namespace VeloNSK
             {
                 animations.Animations_Button(Block_Button_Main_One);
                 await Task.Delay(300);
-                await Navigation.PushModalAsync(new PersonalAccountPage(), animate);
+                InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
+                await Navigation.PushModalAsync(new PersonalAccountPage(loginUsers.IdUsers, false), animate);
             };
 
             Block_Button_Main_One.Clicked += async (s, e) =>

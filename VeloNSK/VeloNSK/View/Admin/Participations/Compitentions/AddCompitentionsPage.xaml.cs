@@ -26,13 +26,21 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
         private DateTime Time;
         private int id_Distantion;
         private Picker picker;
+        private DateTime today_date;
 
         public AddCompitentionsPage(int id)
         {
             InitializeComponent();
             get_infa(id);
             Criate_Picer();
-            Time_Picrt.MinimumDate = DateTime.Now.AddDays(3);
+            today_date = DateTime.Now.AddDays(3);
+            string mons = "";
+            string hours = "";
+            string mins = "";
+            if (today_date.Month < 10) { mons = "0" + today_date.Month.ToString(); } else { mons = today_date.Month.ToString(); }
+            if (today_date.Hour < 10) { hours = "0" + today_date.Hour.ToString(); } else { hours = today_date.Hour.ToString(); }
+            if (today_date.Minute < 10) { mins = "0" + today_date.Minute.ToString(); } else { mins = today_date.Minute.ToString(); }
+            Time_Picrt.Text = today_date.Day.ToString() + "-" + mons + "-" + today_date.Year.ToString() + " " + hours + ":" + mins;
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
@@ -42,13 +50,29 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync();//Переход назад
             };
-            Time_Picrt.MinimumDate = DateTime.Today;
-            Time_Picrt.DateSelected += (s, e) =>
+
+            Time_Picrt.TextChanged += (s, e) =>
             {
-                Time = e.NewDate;
+                if (Time_Picrt.Text.Length == 16)
+                {
+                    string a = Time_Picrt.Text;
+                    int day = Convert.ToInt32(a.Remove(2, 14));
+                    int mouns = Convert.ToInt32(a.Remove(0, 3).Remove(2, 11));
+                    int yars = Convert.ToInt32(a.Remove(0, 6).Remove(4, 6));
+                    int hour = Convert.ToInt32(a.Remove(0, 11).Remove(2, 3));
+                    int minuts = Convert.ToInt32(a.Remove(0, 14));
+                    DateTime selectad_time = new DateTime(yars, mouns, day, hour, minuts, 0);
+                    if (selectad_time >= today_date.AddDays(-1))
+                    {
+                    }
+                    else
+                    {
+                        DisplayAlert("Предупреждение", "Создать компетенцию можно не познее чем за 3 дня до соревнования", "Ok");
+                    }
+                }
             };
 
             Registrations_Button.Clicked += async (s, e) =>
@@ -56,22 +80,40 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                 if (id != 0) { await Update(id); }
                 else
                 {
-                    IEnumerable<Competentions> competentions = await competentionsServise.Get();
-                    IEnumerable<Distantion> distantions = await distantionsServise.Get();
-                    var info = from d in distantions
-                               join i in competentions on d.IdDistantion equals i.IdDistantion
-                               select new
-                               {
-                                   d.NameDistantion,
-                                   i.Date,
-                               };
-                    info = info.Where(p => p.NameDistantion == picker.Items[picker.SelectedIndex] && p.Date == Time);
-                    int res = info.Count();
-                    if (res == 0)
+                    if (Time_Picrt.Text.Length == 16)
                     {
-                        await Criate();
+                        string a = Time_Picrt.Text;
+                        int day = Convert.ToInt32(a.Remove(2, 14));
+                        int mouns = Convert.ToInt32(a.Remove(0, 3).Remove(2, 11));
+                        int yars = Convert.ToInt32(a.Remove(0, 6).Remove(4, 6));
+                        int hour = Convert.ToInt32(a.Remove(0, 11).Remove(2, 3));
+                        int minuts = Convert.ToInt32(a.Remove(0, 14));
+                        DateTime selectad_time = new DateTime(yars, mouns, day, hour, minuts, 0);
+                        if (selectad_time >= today_date)
+                        {
+                            Time = selectad_time;
+                            IEnumerable<Competentions> competentions = await competentionsServise.Get();
+                            IEnumerable<Distantion> distantions = await distantionsServise.Get();
+                            var info = from d in distantions
+                                       join i in competentions on d.IdDistantion equals i.IdDistantion
+                                       select new
+                                       {
+                                           d.NameDistantion,
+                                           i.Date,
+                                       };
+                            info = info.Where(p => p.NameDistantion == picker.Items[picker.SelectedIndex] && p.Date == Time);
+                            int res = info.Count();
+                            if (res == 0)
+                            {
+                                await Criate();
+                            }
+                            else { await DisplayAlert("Ошибка", "Компетенция с такими параметрами существует", "Ok"); }
+                        }
+                        else
+                        {
+                            await DisplayAlert("Предупреждение", "Создать компетенцию можно не познее чем за 3 дня до соревнования", "Ok");
+                        }
                     }
-                    else { await DisplayAlert("Ошибка", "Компетенция с такими параметрами существует", "Ok"); }
                 }
             };
         }
@@ -107,7 +149,7 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             var info = distantions.FirstOrDefault(p => p.IdDistantion == competentions.IdDistantion);
             if (id != 0)
             {
-                Time_Picrt.Date = competentions.Date;
+                Time_Picrt.Text = competentions.Date.ToShortDateString();
                 for (int i = 0; i < picker.Items.Count; i++)
                 {
                     if (info.Discriptions == picker.Items[picker.SelectedIndex])
@@ -153,7 +195,6 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                 if (!await DisplayAlert("", "Добавить еще одну дистанцию", "Да", "Нет")) { await Navigation.PopModalAsync(); }
                 else
                 {
-                    Time_Picrt.MinimumDate = DateTime.Today;
                 }
             }
             else

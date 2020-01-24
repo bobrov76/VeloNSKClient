@@ -19,6 +19,7 @@ namespace VeloNSK.View.Gateri
     public partial class PhotoGaleri : ContentPage
     {
         private HttpClient _client;
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
         private links picture_lincs = new links();
         private ConnectClass connectClass = new ConnectClass();
         private string[] images;
@@ -30,7 +31,7 @@ namespace VeloNSK.View.Gateri
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon());
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
             Save_More_Button.Clicked += async (s, e) =>
@@ -124,6 +125,22 @@ namespace VeloNSK.View.Gateri
             catch (Exception ex)
             {
                 Debug.WriteLine($"DownloadAndSaveImage Exception: {ex}");
+            }
+        }
+
+        private new void SizeChanged(object sender, EventArgs e)
+        {
+            if (size_form.GetHeightSize() < size_form.GetWidthSize())
+            {
+                Main_RowDefinition_Ziro.Height = 0;
+                Main_RowDefinition_Fore.Height = 0;
+                Main_RowDefinition_One.Height = 0;
+            }
+            else
+            {
+                Main_RowDefinition_Ziro.Height = 70;
+                Main_RowDefinition_Fore.Height = 60;
+                Main_RowDefinition_One.Height = 30;
             }
         }
     }

@@ -33,7 +33,7 @@ namespace VeloNSK
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon());
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
             Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
@@ -57,10 +57,18 @@ namespace VeloNSK
 
         private new void SizeChanged(object sender, EventArgs e)
         {
-            if (size_form.GetHeightSize() < 600) Main_RowDefinition_One.Height = 0;
-            if (size_form.GetHeightSize() > 600) Main_RowDefinition_One.Height = 60;
-            if (size_form.GetHeightSize() < 600) Main_RowDefinition_Fore.Height = 0;
-            if (size_form.GetHeightSize() > 600) Main_RowDefinition_Fore.Height = 60;
+            if (size_form.GetHeightSize() < size_form.GetWidthSize())
+            {
+                Main_RowDefinition_Ziro.Height = 0;
+                Main_RowDefinition_Fore.Height = 0;
+                Main_RowDefinition_One.Height = 0;
+            }
+            else
+            {
+                Main_RowDefinition_Ziro.Height = 70;
+                Main_RowDefinition_Fore.Height = 60;
+                Main_RowDefinition_One.Height = 30;
+            }
         }
     }
 }

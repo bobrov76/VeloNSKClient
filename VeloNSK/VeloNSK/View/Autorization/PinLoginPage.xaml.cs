@@ -212,6 +212,7 @@ namespace VeloNSK
         {
             double width = size_form.GetWidthSize();
             double height = size_form.GetHeightSize();
+            DisplayAlert("", width.ToString(), "ok");
             if (width > height)
             {
                 outerStack.Orientation = StackOrientation.Horizontal;

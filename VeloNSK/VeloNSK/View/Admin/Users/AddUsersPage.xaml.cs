@@ -224,6 +224,8 @@ namespace VeloNSK.View.Admin.Users
                 Patronymic_Entry.Text = infoUsers.Patronimic;
                 Yars_Entry.Text = infoUsers.Years.ToString();
                 Email_Entry.Text = infoUsers.Email;
+                Login_Entry.IsEnabled = false;
+                Email_Entry.IsEnabled = false;
                 User_Image.Source = new UriImageSource
                 {
                     CachingEnabled = false,

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Plugin.FilePicker;
+using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +15,7 @@ using VeloNSK.APIServise.Servise;
 using VeloNSK.Context;
 using VeloNSK.HelpClass.Connected;
 using VeloNSK.HelpClass.Style;
+using VeloNSK.View;
 using VeloNSK.View.Admin;
 using VeloNSK.View.Admin.Users;
 using Xamarin.Forms;
@@ -28,10 +30,7 @@ namespace VeloNSK
         private ConnectClass connectClass = new ConnectClass();
         private links picture_lincs = new links();
         private GetClientServise getClientServise = new GetClientServise();
-
-        // DummyDataProvider dummyData = new DummyDataProvider();
         private Animations animations = new Animations();
-
         private bool animate;
         private UsersContext db;
 
@@ -61,66 +60,27 @@ namespace VeloNSK
 
             PoiskLogin.TextChanged += async (s, e) =>
             {
-                if (PoiskLogin.Text.Length != 0)
-                {
-                    await Poisk("PoiskLogin");
-                }
+                await Poisk("PoiskLogin");
             };
 
             PoiskEmail.TextChanged += async (s, e) =>
             {
-                if (PoiskEmail.Text.Length != 0)
-                {
-                    await Poisk("PoiskEmail");
-                }
+                await Poisk("PoiskEmail");
             };
 
             PoiskName.TextChanged += async (s, e) =>
             {
-                if (PoiskName.Text.Length != 0)
-                {
-                    await Poisk("PoiskName");
-                }
+                await Poisk("PoiskName");
             };
 
             PoiskFam.TextChanged += async (s, e) =>
             {
-                if (PoiskFam.Text.Length != 0)
-                {
-                    await Poisk("PoiskFam");
-                }
+                await Poisk("PoiskFam");
             };
 
             PoiskPatronimic.TextChanged += async (s, e) =>
             {
-                if (PoiskPatronimic.Text.Length != 0)
-                {
-                    await Poisk("PoiskPatronimic");
-                }
-            };
-
-            PoiskRol.TextChanged += async (s, e) =>
-            {
-                if (PoiskRol.Text.Length != 0)
-                {
-                    await Poisk("PoiskRol");
-                }
-            };
-
-            PoiskYars.TextChanged += async (s, e) =>
-            {
-                if (PoiskYars.Text.Length != 0)
-                {
-                    await Poisk("PoiskYars");
-                }
-            };
-
-            PoiskStatusHels.TextChanged += async (s, e) =>
-            {
-                if (PoiskStatusHels.Text.Length != 0)
-                {
-                    await Poisk("PoiskStatusHels");
-                }
+                await Poisk("PoiskPatronimic");
             };
 
             btnImport.Clicked += async (s, e) =>
@@ -150,16 +110,9 @@ namespace VeloNSK
             {
                 case "PoiskLogin": infoUsers = infoUsers.Where(p => p.Login == PoiskLogin.Text || p.Login.StartsWith(PoiskLogin.Text)); break;
                 case "PoiskName": infoUsers = infoUsers.Where(p => p.Name == PoiskName.Text || p.Name.StartsWith(PoiskName.Text)); break;
-
-                case "PoiskFam": infoUsers = infoUsers.Where(p => p.Fam == PoiskFam.Text || p.Login.StartsWith(PoiskFam.Text)); break;
-
-                case "PoiskEmail": infoUsers = infoUsers.Where(p => p.Email == PoiskEmail.Text || p.Name.StartsWith(PoiskEmail.Text)); break;
-
-                case "PoiskPatronimic": infoUsers = infoUsers.Where(p => p.Patronimic == PoiskPatronimic.Text || p.Login.StartsWith(PoiskPatronimic.Text)); break;
-
-                //case "PoiskPol": infoUsers = infoUsers.Where(p => p.Isman == PoiskName.Text || p.Name.StartsWith(PoiskName.Text)); break;
-
-                case "PoiskRol": infoUsers = infoUsers.Where(p => p.Rol == PoiskRol.Text || p.Login.StartsWith(PoiskRol.Text)); break;
+                case "PoiskFam": infoUsers = infoUsers.Where(p => p.Fam == PoiskFam.Text || p.Fam.StartsWith(PoiskFam.Text)); break;
+                case "PoiskEmail": infoUsers = infoUsers.Where(p => p.Email == PoiskEmail.Text || p.Email.StartsWith(PoiskEmail.Text)); break;
+                case "PoiskPatronimic": infoUsers = infoUsers.Where(p => p.Patronimic == PoiskPatronimic.Text || p.Patronimic.StartsWith(PoiskPatronimic.Text)); break;
             }
             var res = infoUsers.ToList();
             if (res.Count != 0)
@@ -222,7 +175,7 @@ namespace VeloNSK
             if (e.SelectedItem != null)
             {
                 InfoUser obj = (InfoUser)e.SelectedItem;
-                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Обновить данные", "Удалить данные");
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Подробнее", "Обновить данные", "Удалить данные");
                 switch (res)
                 {
                     case "Обновить данные":
@@ -243,6 +196,10 @@ namespace VeloNSK
                             }
                             await showEmployeeAsync();
                         }
+                        break;
+
+                    case "Подробнее":
+                        await Navigation.PushModalAsync(new PersonalAccountPage(obj.IdUsers, true), animate);
                         break;
                 }
                 lstData.SelectedItem = null;

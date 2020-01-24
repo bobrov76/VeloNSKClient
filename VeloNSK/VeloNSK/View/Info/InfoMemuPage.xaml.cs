@@ -17,51 +17,56 @@ namespace VeloNSK
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class InfoMemuPage : ContentPage
     {
-        links picture_lincs = new links();
-        Animations animations = new Animations();
-        ConnectClass connectClass = new ConnectClass();
-        HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+        private links picture_lincs = new links();
+        private Animations animations = new Animations();
+        private ConnectClass connectClass = new ConnectClass();
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
         public InfoMemuPage()
         {
             InitializeComponent();
-            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы            
+            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
-            
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon());
+
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
-            Head_Button.Clicked += async (s, e) => 
+            Head_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Head_Button);
                 await Task.Delay(1000);
-                await Navigation.PopModalAsync();//Переход назад  
+                await Navigation.PopModalAsync();//Переход назад
             };
-            Block_Button_One.Clicked += async (s, e) => 
+            Block_Button_One.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_One);
-                await Task.Delay(1000); 
-                await Navigation.PushModalAsync(new PhotoGaleri()); 
-            }; 
-            Block_Button_Two.Clicked += async (s, e) => 
+                await Task.Delay(1000);
+                await Navigation.PushModalAsync(new PhotoGaleri());
+            };
+            Block_Button_Two.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Two);
-                await Task.Delay(1000); 
-                await Navigation.PushModalAsync(new InfoUsersPage()); 
-            }; 
+                await Task.Delay(1000);
+                await Navigation.PushModalAsync(new InfoUsersPage());
+            };
             Block_Button_Three.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Three);
-                await Task.Delay(1000); 
-                await Navigation.PushModalAsync(new InfoMapsPage()); 
-            }; 
-            Block_Button_Fore.Clicked+= async (s, e) => 
-            {
-                animations.Animations_Button(Block_Button_Fore);
-                await Task.Delay(1000); 
-                await Navigation.PushModalAsync(new InfoContactsPage()); 
+                await Task.Delay(1000);
+                await Navigation.PushModalAsync(new InfoMapsPage());
             };
+            Block_Button_Fore.Clicked += async (s, e) =>
+             {
+                 animations.Animations_Button(Block_Button_Fore);
+                 await Task.Delay(1000);
+                 await Navigation.PushModalAsync(new InfoContactsPage());
+             };
         }
-        public async Task Connect_ErrorAsync() { await Navigation.PopModalAsync(); } //Переход на страницу с ошибкой интернет соединения
+
+        public async Task Connect_ErrorAsync()
+        {
+            await Navigation.PopModalAsync();
+        } //Переход на страницу с ошибкой интернет соединения
 
         private new void SizeChanged(object sender, EventArgs e)
         {
@@ -70,6 +75,5 @@ namespace VeloNSK
             if (size_form.GetHeightSize() < 600) Main_RowDefinition_One.Height = 0;
             if (size_form.GetHeightSize() > 600) Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
         }
-
     }
 }

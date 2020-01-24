@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+                 xmlns:controls="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
+                 x:Class="VeloNSK.View.Admin.Users.MoreInfoUserPage">
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation
+      PositionIn="Bottom"
+      PositionOut="Center"
+      ScaleIn="1"
+      ScaleOut="0.7"
+      DurationIn="700"
+      EasingIn="BounceOut" />
+    </pages:PopupPage.Animation>
+    <ScrollView
+    HorizontalOptions="Center"
+    VerticalOptions="Center">
+        <AbsoluteLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" x:Name="Main_ColumnDefinition_Ziro" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70" x:Name="Main_RowDefinition_Ziro" />
+                    <RowDefinition Height="50" x:Name="Main_RowDefinition_One" />
+                    <RowDefinition Height="*" x:Name="Main_RowDefinition_Two" />
+                    <RowDefinition Height="40" x:Name="Main_RowDefinition_Three" />
+                </Grid.RowDefinitions>
+                <Image x:Name="image_fon" Grid.RowSpan="4" Aspect="Fill" />
+                <!--Шапка-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="130" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
+                    <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
+                    <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" />
+                    <Button x:Name="Head_Button" Text = "Back" Margin="10,10,0,10" />
+                </Grid>
+                <!--Блок заголовка-->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="70" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label HorizontalOptions="Center" VerticalOptions="Center" Text = "Мой профиль" Margin="10,10,0,10" TextColor="Black" />
+                    <ImageButton x:Name="Redact_Button" Grid.Column="1" Margin="12,12,12,12" />
+                </Grid>
+                <!--Блок информации-->
+                <StackLayout Grid.Row="2" Spacing="10" Padding="5" Orientation="Vertical" x:Name="outerStack">
+                    <!-- can change orientation to make responsive -->
+                    <Grid HorizontalOptions="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="200" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <controls:CircleImage Grid.Column="1" Grid.Row="1" BorderThickness="3" BorderColor="Black" x:Name="User_Image" WidthRequest="200" HeightRequest="200" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+                    <ScrollView>
+                        <StackLayout Spacing="5" HorizontalOptions="FillAndExpand"
+                    WidthRequest="1000">
+                            <StackLayout Orientation="Horizontal">
+                                <Label x:Name="Login_Lable" Text="Login: " Margin="20,0,0,0" />
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <Label x:Name="FIO_Lable" Text="ФИО: " Margin="20,0,0,0" />
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <Label x:Name="Yars_Lable" Text="Возраст: " Margin="20,0,0,0" />
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <Label x:Name="Pol_Lable" Text="Пол: " Margin="20,0,0,0" />
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <Label x:Name="StatusHels_Lable" Text="Статус здоровья: " Margin="20,0,0,0" />
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <Label x:Name="Email_Lable" Text="E-mail: " Margin="20,0,0,0" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ScrollView>
+                </StackLayout>
+            </Grid>
+            <ContentView
+          AbsoluteLayout.LayoutFlags="PositionProportional"
+          AbsoluteLayout.LayoutBounds="1, 0, -1, -1">
+                <ContentView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCloseButtonTapped" />
+                </ContentView.GestureRecognizers>
+                <Image
+          x:Name="CloseImage"
+          HeightRequest="30"
+          WidthRequest="30">
+                </Image>
+            </ContentView>
+        </AbsoluteLayout>
+    </ScrollView>
+</pages:PopupPage>

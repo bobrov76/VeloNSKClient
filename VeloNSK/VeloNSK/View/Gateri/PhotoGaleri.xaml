@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Gateri.PhotoGaleri" x:Name="Fon">
+             x:Class="VeloNSK.View.Gateri.PhotoGaleri" x:Name="Fon" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -45,8 +45,9 @@
             <RowDefinition Height="60" x:Name="Main_RowDefinition_One" />
             <RowDefinition Height="*" x:Name="Main_RowDefinition_Two" />
             <RowDefinition Height="0" x:Name="RowDefinitionActivity" />
-            <RowDefinition Height="40" x:Name="Main_RowDefinition_Fore" />
+            <RowDefinition Height="30" x:Name="Main_RowDefinition_Fore" />
         </Grid.RowDefinitions>
+        <Image x:Name="image_fon" Grid.RowSpan="5" Aspect="Fill" />
         <!--Шапка-->
         <Grid>
             <Grid.ColumnDefinitions>

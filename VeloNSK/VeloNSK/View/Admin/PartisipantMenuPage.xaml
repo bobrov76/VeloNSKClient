@@ -53,17 +53,17 @@
         <!--Шапка-->
         <Grid Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="130" />
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="130" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
-            <Image x:Name="Head_Image" Margin="0,0,10,0"  Aspect="Fill" />
+            <Image x:Name="Head_Image" Grid.Column="2" Margin="0,0,10,0"  Aspect="Fill" />
             <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
-            <Button x:Name="Head_Button" Grid.Column="2" Text = "Выход" Margin="10,10,10,10" Style="{StaticResource Head_Button}" />
+            <Button x:Name="Head_Button" Text = "Назад" Margin="10,10,10,10" Style="{StaticResource Head_Button}" />
         </Grid>
         <!--Блок кнопок-->
         <ScrollView Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Never">

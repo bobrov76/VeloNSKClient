@@ -93,26 +93,17 @@ namespace VeloNSK.View.Admin.ResultParticipation
 
             PoiskLogin.TextChanged += async (s, e) =>
             {
-                if (PoiskLogin.Text != null)
-                {
-                    await Poisk("PoiskLogin");
-                }
+                await Poisk("PoiskLogin");
             };
 
             PoiskNameDistans.TextChanged += async (s, e) =>
             {
-                if (PoiskNameDistans.Text != null)
-                {
-                    await Poisk("PoiskNameDistans");
-                }
+                await Poisk("PoiskNameDistans");
             };
 
             PoiskStatus.TextChanged += async (s, e) =>
             {
-                if (PoiskStatus.Text != null && PoiskStatus.Text != "")
-                {
-                    await Poisk("PoiskStatus");
-                }
+                await Poisk("PoiskStatus");
             };
 
             PoiskDate.MinimumDate = DateTime.Today;

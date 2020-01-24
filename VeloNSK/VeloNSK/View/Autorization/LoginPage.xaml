@@ -46,7 +46,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-            <ColumnDefinition Width="400" />
+            <ColumnDefinition Width="2*" x:Name="Login_ColumnDefinition_One" />
             <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>

@@ -20,19 +20,19 @@ namespace VeloNSK.View.Admin.Participations
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ParticipationsPage : ContentPage
     {
+        private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
+        private RegistrationUsersService registrationUsersService = new RegistrationUsersService();
         private ParticipationService participationService = new ParticipationService();
         private CompetentionsServise competentionsServise = new CompetentionsServise();
-        private GetClientServise getClientServise = new GetClientServise();
-        private RegistrationUsersService registrationUsersService = new RegistrationUsersService();
-        private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
         private CategoriYarsServise categoriYarsServise = new CategoriYarsServise();
         private DistantionsServise distantionsServise = new DistantionsServise();
+        private GetClientServise getClientServise = new GetClientServise();
         private ConnectClass connectClass = new ConnectClass();
-        private links picture_lincs = new links();
         private Animations animations = new Animations();
-        private bool animate;
-        private bool alive = true;
+        private links picture_lincs = new links();
         private DateTime SelectedDate;
+        private bool alive = true;
+        private bool animate;
 
         public ParticipationsPage()
         {
@@ -40,59 +40,55 @@ namespace VeloNSK.View.Admin.Participations
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
-
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
-            showEmployeeAsync();
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Device.StartTimer(TimeSpan.FromSeconds(10), OnTimerTickAsync);
+            showEmployeeAsync(true);
 
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync();//Переход назад
             };
 
             btnAddRecord.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(btnAddRecord);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 int nul = 0;
                 await Navigation.PushModalAsync(new AddPaticipationsPage(nul), animate);
             };
 
             PoiskLogin.TextChanged += async (s, e) =>
             {
-                if (PoiskLogin.Text != null)
-                {
-                    await Poisk("PoiskLogin");
-                }
+                await Poisk("PoiskLogin");
             };
 
             PoiskNameDistans.TextChanged += async (s, e) =>
             {
-                if (PoiskNameDistans.Text != null)
-                {
-                    await Poisk("PoiskNameDistans");
-                }
+                await Poisk("PoiskNameDistans");
             };
 
             PoiskStatus.TextChanged += async (s, e) =>
             {
-                if (PoiskStatus.Text != null && PoiskStatus.Text != "")
-                {
-                    await Poisk("PoiskStatus");
-                }
+                await Poisk("PoiskStatus");
             };
 
-            PoiskDate.MinimumDate = DateTime.Today;
-
-            PoiskDate.DateSelected += async (s, e) =>
+            PoiskDate.TextChanged += async (s, e) =>
             {
-                if (e.NewDate != null)
+                if (PoiskDate.Text.Length == 10)
                 {
-                    SelectedDate = e.NewDate;
+                    string a = PoiskDate.Text;
+                    int day = Convert.ToInt32(a.Remove(2, 8));
+                    int mouns = Convert.ToInt32(a.Remove(0, 3).Remove(2, 5));
+                    int yars = Convert.ToInt32(a.Remove(0, 6));
+                    SelectedDate = new DateTime(yars, mouns, day);
                     await Poisk("PoiskDate");
+                }
+                else
+                {
+                    showEmployeeAsync(false);
                 }
             };
 
@@ -149,7 +145,6 @@ namespace VeloNSK.View.Admin.Participations
         private bool OnTimerTickAsync()
         {
             Get_Time();
-
             return alive;
         }
 
@@ -175,8 +170,9 @@ namespace VeloNSK.View.Admin.Participations
 
             switch (filtr)
             {
-                case "PoiskLogin": info = info.Where(p => p.Login == PoiskLogin.Text || p.Login.StartsWith(PoiskLogin.Text)); break;
                 case "PoiskNameDistans": info = info.Where(p => p.NameDistantion == PoiskNameDistans.Text || p.NameDistantion.StartsWith(PoiskNameDistans.Text)); break;
+                case "PoiskLogin": info = info.Where(p => p.Login == PoiskLogin.Text || p.Login.StartsWith(PoiskLogin.Text)); break;
+                case "PoiskDate": info = info.Where(p => p.Date == SelectedDate); break;
                 case "PoiskStatus":
                     if (PoiskStatus.Text.Substring(0, 1).ToString() == "T" || PoiskStatus.Text.Substring(0, 1).ToString() == "t")
                     {
@@ -186,11 +182,9 @@ namespace VeloNSK.View.Admin.Participations
                     {
                         info = info.Where(p => p.IdStatusVerification == false);
                     }
-
                     break;
-
-                case "PoiskDate": info = info.Where(p => p.Date == SelectedDate); break;
             }
+
             var res = info.ToList();
             if (res.Count != 0)
             {
@@ -206,11 +200,14 @@ namespace VeloNSK.View.Admin.Participations
             }
         }
 
-        private async Task showEmployeeAsync()
+        private async Task showEmployeeAsync(bool time)
         {
-            Main_RowDefinition_One.Height = 0;
-            Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
-            activityIndicator.IsRunning = true;
+            if (time)
+            {
+                Main_RowDefinition_One.Height = 0;
+                Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
+                activityIndicator.IsRunning = true;
+            }
             IEnumerable<InfoUser> infoUsers = await registrationUsersService.Get_user();
             IEnumerable<CategoriYars> categoriYars = await categoriYarsServise.Get();
             IEnumerable<Participation> participations = await participationService.Get();
@@ -233,12 +230,15 @@ namespace VeloNSK.View.Admin.Participations
             if (res.Count != 0)
             {
                 lstData.ItemsSource = res;
-                YesRecords.Height = new GridLength(1, GridUnitType.Star);
-                NoRecords.Height = 0;
-                await Task.Delay(3000);
-                Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
-                Main_RowDefinition_Activity.Height = 0;
-                activityIndicator.IsRunning = false;
+                if (time)
+                {
+                    YesRecords.Height = new GridLength(1, GridUnitType.Star);
+                    NoRecords.Height = 0;
+                    await Task.Delay(3000);
+                    Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
+                    Main_RowDefinition_Activity.Height = 0;
+                    activityIndicator.IsRunning = false;
+                }
             }
             else
             {
@@ -254,7 +254,6 @@ namespace VeloNSK.View.Admin.Participations
             {
                 string obj = e.SelectedItem.ToString();
                 obj = obj.Substring(obj.LastIndexOf(',') + 1).Replace("IdParticipation = ", string.Empty).Replace("}", string.Empty);
-                DisplayAlert("", obj.ToString(), "Ok");
                 string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Подробнее", "Обновить данные", "Удалить данные");
                 switch (res)
                 {
@@ -277,7 +276,7 @@ namespace VeloNSK.View.Admin.Participations
                             {
                                 ResultParticipant Del_ResultPartisipation = await resultParticipationServise.Delete(selectad.IdResultParticipation);
                             }
-                            await showEmployeeAsync();
+                            await showEmployeeAsync(false);
                             await DisplayAlert("Уведомление", "Соревнование удалено", "Ok");
                         }
                         break;

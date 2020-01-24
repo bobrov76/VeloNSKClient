@@ -18,9 +18,9 @@ namespace VeloNSK.View.Admin
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PartisipantMenuPage : ContentPage
     {
-        private links picture_lincs = new links();
         private ConnectClass connectClass = new ConnectClass();
         private Animations animations = new Animations();
+        private links picture_lincs = new links();
         private bool animate;
 
         public PartisipantMenuPage()

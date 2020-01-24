@@ -64,10 +64,7 @@ namespace VeloNSK.View.Admin.Participations.Distanse
             {
                 try
                 {
-                    if (PoiskName.Text != null && PoiskName.Text != "")
-                    {
-                        await Poisk("PoiskName");
-                    }
+                    await Poisk("PoiskName");
                 }
                 catch { }
             };
@@ -75,10 +72,7 @@ namespace VeloNSK.View.Admin.Participations.Distanse
             {
                 try
                 {
-                    if (PoiskDiscript.Text != null && PoiskDiscript.Text != "")
-                    {
-                        await Poisk("PoiskDiscript");
-                    }
+                    await Poisk("PoiskDiscript");
                 }
                 catch { }
             };
@@ -86,10 +80,7 @@ namespace VeloNSK.View.Admin.Participations.Distanse
             {
                 try
                 {
-                    if (PoiskLengs.Text != null && PoiskLengs != null && PoiskLengs.Text != "")
-                    {
-                        await Poisk("PoiskLengs");
-                    }
+                    await Poisk("PoiskLengs");
                 }
                 catch { }
             };
@@ -141,7 +132,7 @@ namespace VeloNSK.View.Admin.Participations.Distanse
                 switch (filtr)
                 {
                     case "PoiskName": infoUsers = infoUsers.Where(p => p.NameDistantion == PoiskName.Text || p.NameDistantion.StartsWith(PoiskName.Text)); break;
-                    case "PoiskDiscript": infoUsers = infoUsers.Where(p => p.Discriptions == PoiskDiscript.Text); break;
+                    case "PoiskDiscript": infoUsers = infoUsers.Where(p => p.Discriptions == PoiskDiscript.Text || p.Discriptions.StartsWith(PoiskDiscript.Text)); break;
                     case "PoiskLengs":
 
                         int num;

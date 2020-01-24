@@ -37,7 +37,7 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            showEmployeeAsync();
+            showEmployeeAsync(true);
 
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
@@ -69,6 +69,23 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                 await Navigation.PopModalAsync();//Переход назад
             };
 
+            PoiskDate.TextChanged += async (s, e) =>
+            {
+                if (PoiskDate.Text.Length == 10)
+                {
+                    string a = PoiskDate.Text;
+                    int day = Convert.ToInt32(a.Remove(2, 8));
+                    int mouns = Convert.ToInt32(a.Remove(0, 3).Remove(2, 5));
+                    int yars = Convert.ToInt32(a.Remove(0, 6));
+                    SelectedDate = new DateTime(yars, mouns, day);
+                    await Poisk("PoiskDate");
+                }
+                else
+                {
+                    await showEmployeeAsync(false);
+                }
+            };
+
             btnAddRecord.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(btnAddRecord);
@@ -81,25 +98,7 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             {
                 try
                 {
-                    if (PoiskName.Text != null)
-                    {
-                        await Poisk("PoiskName");
-                    }
-                }
-                catch { }
-            };
-
-            PoiskDate.MinimumDate = DateTime.Today;
-
-            PoiskDate.DateSelected += async (s, e) =>
-            {
-                try
-                {
-                    if (e.NewDate != null)
-                    {
-                        SelectedDate = e.NewDate;
-                        await Poisk("PoiskDate");
-                    }
+                    await Poisk("PoiskName");
                 }
                 catch { }
             };
@@ -166,11 +165,14 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             }
         }
 
-        private async Task showEmployeeAsync()
+        private async Task showEmployeeAsync(bool time)
         {
-            Main_RowDefinition_One.Height = 0;
-            Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
-            activityIndicator.IsRunning = true;
+            if (time)
+            {
+                Main_RowDefinition_One.Height = 0;
+                Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
+                activityIndicator.IsRunning = true;
+            }
             IEnumerable<Competentions> competentions = await competentionsServise.Get();
             IEnumerable<Distantion> distantions = await distantionsServise.Get();
             var info = from d in distantions
@@ -186,12 +188,15 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             if (res.Count != 0)
             {
                 lstData.ItemsSource = res;
-                YesRecords.Height = new GridLength(1, GridUnitType.Star);
-                NoRecords.Height = 0;
-                await Task.Delay(3000);
-                Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
-                Main_RowDefinition_Activity.Height = 0;
-                activityIndicator.IsRunning = false;
+                if (time)
+                {
+                    YesRecords.Height = new GridLength(1, GridUnitType.Star);
+                    NoRecords.Height = 0;
+                    await Task.Delay(3000);
+                    Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
+                    Main_RowDefinition_Activity.Height = 0;
+                    activityIndicator.IsRunning = false;
+                }
             }
             else
             {
@@ -234,7 +239,7 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                                     ResultParticipant Del_ResultPartisipation = await resultParticipationServise.Delete(id_res_part);
                                 }
                             }
-                            await showEmployeeAsync();
+                            await showEmployeeAsync(false);
                             await DisplayAlert("Уведомление", "Компетенция успешно удалена", "Ok");
                         }
                         break;

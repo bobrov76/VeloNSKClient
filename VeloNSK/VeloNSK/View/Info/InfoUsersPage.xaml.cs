@@ -17,20 +17,21 @@ namespace VeloNSK.View.Info
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class InfoUsersPage : ContentPage
     {
-        links picture_lincs = new links();
-        ConnectClass connectClass = new ConnectClass();
-        HelpClass.Style.Size size_form = new HelpClass.Style.Size();
-        HttpClient _client;
+        private links picture_lincs = new links();
+        private ConnectClass connectClass = new ConnectClass();
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+        private HttpClient _client;
+
         public InfoUsersPage()
         {
             InitializeComponent();
 
             _client = new HttpClient();
 
-            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы            
+            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon());
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             var pdfUrl = "http://90.189.158.10/folders/TrebovanieOfUsers.pdf";
             var googleUrl = "http://drive.google.com/viewerng/viewer?embedded=true&url=";
@@ -45,7 +46,11 @@ namespace VeloNSK.View.Info
             Save_Button.Clicked += async (s, e) => { await DownloadAndSaveImage(pdfUrl); };
             Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
         }
-        public async Task Connect_ErrorAsync() { await Navigation.PopModalAsync(); } //Переход на страницу с ошибкой интернет соединения
+
+        public async Task Connect_ErrorAsync()
+        {
+            await Navigation.PopModalAsync();
+        } //Переход на страницу с ошибкой интернет соединения
 
         private async Task DownloadAndSaveImage(string get_path)
         {
@@ -70,6 +75,5 @@ namespace VeloNSK.View.Info
             if (size_form.GetHeightSize() < 600) Main_RowDefinition_Fore.Height = 0;
             if (size_form.GetHeightSize() > 600) Main_RowDefinition_Fore.Height = 60;
         }
-
     }
 }

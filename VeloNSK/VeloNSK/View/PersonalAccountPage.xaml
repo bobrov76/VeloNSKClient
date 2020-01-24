@@ -78,7 +78,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Label HorizontalOptions="Center" VerticalOptions="Center" Text = "Мой профиль" Margin="10,10,0,10" TextColor="Black" Style="{StaticResource Head_Lable}" />
+            <Label HorizontalOptions="Center" x:Name="Profile_Lable" VerticalOptions="Center" Text = "Мой профиль" Margin="10,10,0,10" TextColor="Black" Style="{StaticResource Head_Lable}" />
             <ImageButton x:Name="Redact_Button" Grid.Column="1" Margin="12,12,12,12" />
         </Grid>
         <!--Блок информации-->
@@ -86,14 +86,14 @@
             <!-- can change orientation to make responsive -->
             <Grid HorizontalOptions="Center">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="10" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="10" />
                     <RowDefinition Height="200" />
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="10" />
                 </Grid.RowDefinitions>
                 <controls:CircleImage Grid.Column="1" Grid.Row="1" BorderThickness="3" BorderColor="Black" x:Name="User_Image" WidthRequest="200" HeightRequest="200" HorizontalOptions="Center" VerticalOptions="Center" />
             </Grid>
