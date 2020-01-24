@@ -131,9 +131,10 @@ namespace VeloNSK.View.Admin.Participations
                     var picker_list = info.Where(
                         x => x.NameDistantion == CompetentionsPicer.Items[CompetentionsPicer.SelectedIndex] &&
                         x.Date == Convert.ToDateTime(SelectDate.Items[SelectDate.SelectedIndex]));
-                    var j = picker_list.Select(x => x.IdCompetentions);
-                    IDCompitention = Convert.ToInt32(j);
-                    DisplayAlert("", IDCompitention.ToString(), "Ok");
+                    foreach (var item in picker_list)
+                    {
+                        IDCompitention = Convert.ToInt32(item.IdCompetentions);
+                    }
                 };
             }
             else
@@ -142,7 +143,6 @@ namespace VeloNSK.View.Admin.Participations
                 SelectDate.Items.Add(DateTime.Today.ToString("d"));
             }
             GridMain.Children.Add(SelectDate, 1, 5);
-            //  SelectDate.SelectedIndex = 1;
         }
 
         private async Task Criate_LoginPicer(bool status)

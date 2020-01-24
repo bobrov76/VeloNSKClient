@@ -46,12 +46,12 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="400" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" x:Name="Login_RowDefinition_Ziro" />
-                <RowDefinition Height="280" x:Name="Login_RowDefinition_One" />
+                <RowDefinition Height="300" x:Name="Login_RowDefinition_One" />
                 <RowDefinition Height="*" x:Name="Login_RowDefinition_Two" />
             </Grid.RowDefinitions>
             <Image x:Name="image_fon" Grid.RowSpan="3" Grid.ColumnSpan="3" Aspect="Fill" />

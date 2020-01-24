@@ -19,8 +19,11 @@ namespace VeloNSK.View.Admin.Participations.Distanse
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DistantionPage : ContentPage
     {
-        private GetClientServise getClientServise = new GetClientServise();
+        private CompetentionsServise competentionsServise = new CompetentionsServise();
         private DistantionsServise distantionsServise = new DistantionsServise();
+        private ParticipationService participationService = new ParticipationService();
+        private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
+        private GetClientServise getClientServise = new GetClientServise();
         private ConnectClass connectClass = new ConnectClass();
         private links picture_lincs = new links();
         private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
@@ -138,7 +141,7 @@ namespace VeloNSK.View.Admin.Participations.Distanse
                 switch (filtr)
                 {
                     case "PoiskName": infoUsers = infoUsers.Where(p => p.NameDistantion == PoiskName.Text || p.NameDistantion.StartsWith(PoiskName.Text)); break;
-                    case "PoiskDiscript": infoUsers = infoUsers.Where(p => p.Discriptions == PoiskDiscript.Text || p.Discriptions.StartsWith(PoiskDiscript.Text)); break;
+                    case "PoiskDiscript": infoUsers = infoUsers.Where(p => p.Discriptions == PoiskDiscript.Text); break;
                     case "PoiskLengs":
 
                         int num;
@@ -208,6 +211,26 @@ namespace VeloNSK.View.Admin.Participations.Distanse
                         if (result == true)
                         {
                             Distantion Del_Distantion = await distantionsServise.Delete(obj.IdDistantion);
+                            IEnumerable<Competentions> competentions = await competentionsServise.Get();
+                            var selectad_del_compitentions = competentions.FirstOrDefault(p => p.IdDistantion == obj.IdDistantion);
+                            if (selectad_del_compitentions != null)
+                            {
+                                Competentions Del_compitentions = await competentionsServise.Delete(selectad_del_compitentions.IdCompetentions);
+                                IEnumerable<Participation> participations = await participationService.Get();
+                                var selectad = participations.FirstOrDefault(p => p.IdCompetentions == selectad_del_compitentions.IdCompetentions);
+                                if (selectad != null)
+                                {
+                                    int id_part = selectad.IdParticipation;
+                                    IEnumerable<ResultParticipant> res_participations = await resultParticipationServise.Get();
+                                    Participation Del_Participation = await participationService.Delete(id_part);
+                                    var res_selectad = res_participations.FirstOrDefault(p => p.IdParticipation == id_part);
+                                    if (res_selectad != null)
+                                    {
+                                        int id_res_part = res_selectad.IdResultParticipation;
+                                        ResultParticipant Del_ResultPartisipation = await resultParticipationServise.Delete(id_res_part);
+                                    }
+                                }
+                            }
                             await showEmployeeAsync();
                             await DisplayAlert("Уведомление", "Дистанция успешно удалена", "Ok");
                         }
@@ -228,14 +251,13 @@ namespace VeloNSK.View.Admin.Participations.Distanse
 
             if (file != null)
             {
-                //var content = new MultipartFormDataContent();
-                //content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
-                //content.Add(new StringContent(""), "\"Id\"");
-                //var httpClient = new HttpClient();
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
+                var httpClient = new HttpClient();
 
-                //var servere_adres = "http://90.189.158.10/api/Distans/";
-                //var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
-                //var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
+                var servere_adres = "http://90.189.158.10/api/Distans/";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
                 await DisplayAlert("", "Экспорт успешно выполнен", "Ok");
             }
         }
@@ -246,7 +268,6 @@ namespace VeloNSK.View.Admin.Participations.Distanse
             var response = await client.GetStreamAsync("http://90.189.158.10/Simple/Шаблон для дистанций.xlsx");
             var filePath = await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
             await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
-            //await DisplayAlert("", filePath, "Ok");
         }
 
         private async Task Import()

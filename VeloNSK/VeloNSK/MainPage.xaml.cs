@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.APIServise;
@@ -28,6 +29,7 @@ namespace VeloNSK
         private ConnectClass connectClass = new ConnectClass();
         private Animations animations = new Animations();
         private bool animate;
+        private HttpClient _client;
 
         public MainPage()
         {
@@ -56,6 +58,7 @@ namespace VeloNSK
 
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
+            _client = new HttpClient();
             Slider_Left_Bt.Clicked += (s, e) => Slider_Left_Function();
             Slider_Right_Bt.Clicked += (s, e) => Slider_Right_Function();
             Head_Button.Clicked += async (s, e) =>
@@ -73,38 +76,31 @@ namespace VeloNSK
             Block_Button_Tho.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Tho);
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await LoginAsync();
             };
             Block_Button_Three.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Three);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PushModalAsync(new InfoMemuPage(), animate);
             };
 
-            for (int i = 0; i <= 10; i++)
-            {
-                image_string[i] = server_lincs.GetImageServerLinks() + i.ToString() + ".jpg";
-            }
-            img();
+            GetImageListAsync();
         }
 
-        //async Task<string[]> GetImageListAsync()
-        //{
-        //    try
-        //    {
-        //        string requestUri = "http://90.189.158.10/api/Images";
-        //        string result = await _client.GetStringAsync(requestUri);
-        //        return JsonConvert.DeserializeObject<string[]>(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine($"\tERROR: {ex.Message}");
-        //    }
-
-        //    return null;
-        //}
+        private async void GetImageListAsync()
+        {
+            try
+            {
+                string requestUri = "http://90.189.158.10/api/Images";
+                string result = await _client.GetStringAsync(requestUri);
+                var result_msg = JsonConvert.DeserializeObject<string[]>(result);
+                image_string = result_msg;
+                img();
+            }
+            catch { }
+        }
 
         public async Task LoginAsync()
         {
@@ -137,116 +133,170 @@ namespace VeloNSK
 
         private void img()
         {
+            //uint duration = 10 * 60 * 1000;
+
+            //Slid0.RotateTo(307 * 360, duration);
+            //Slid0.RotateXTo(251 * 360, duration);
+            //Slid0.RotateYTo(199 * 360, duration);
+            animated();
             Slid0.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new Uri(image_string[image_string.Length - 5])
             };
+
             Slid1.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[image_string.Length - 4])
             };
+
             Slid2.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[image_string.Length - 3])
             };
+
             Slid3.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[image_string.Length - 2])
             };
+
             Slid4.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[image_string.Length - 1])
             };
+
             Slid5.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[image_string.Length - 1])
             };
+        }
+
+        private async void Flip(Image image)
+        {
+            uint timeout = 2000;
+
+            //image.RotationY = -270;
+            await image.RotateYTo(-90, timeout, Easing.SpringIn);
+            image.IsVisible = false;
+            image.IsVisible = true;
+            await image.RotateYTo(-360, timeout, Easing.SpringOut);
+            //  image.RotationY = 0;
+        }
+
+        private void animated()
+        {
+            Flip(Slid0);
+            Flip(Slid1);
+            Flip(Slid2);
+            Flip(Slid3);
+            Flip(Slid4);
+            Flip(Slid5);
         }
 
         private void Slider_Right_Function() //Перелистывание слайдера на право
         {
             if (counter >= image_string.Length) counter = 0;
+            animated();
             Slid0.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter++])
             };
 
             if (counter1 >= image_string.Length) counter1 = 0;
+
             Slid1.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter1++])
             };
 
             if (counter2 >= image_string.Length) counter2 = 0;
             Slid2.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter2++])
             };
 
             if (counter3 >= image_string.Length) counter3 = 0;
             Slid3.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter3++])
             };
 
             if (counter4 >= image_string.Length) counter4 = 0;
             Slid4.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter4++])
             };
 
             if (counter5 >= image_string.Length) counter5 = 0;
             Slid5.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter5++])
             };
         }
 
         private void Slider_Left_Function()//Перелистывание слайдера на лево
         {
+            animated();
             if (counter <= 0) counter = image_string.Length;
+
             Slid0.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[--counter])
             };
 
             Slid1.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[--counter1])
             };
             if (counter1 <= 0) counter1 = image_string.Length;
 
             Slid2.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[--counter2])
             };
             if (counter2 <= 0) counter2 = image_string.Length;
 
             Slid3.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[--counter3])
             };
 
             if (counter3 <= 0) counter3 = image_string.Length;
             Slid4.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[--counter4])
             };
 
@@ -254,7 +304,8 @@ namespace VeloNSK
 
             Slid5.Source = new UriImageSource
             {
-                CachingEnabled = false,
+                CachingEnabled = true,
+                CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[--counter5])
             };
             if (counter5 <= 0) counter5 = image_string.Length;

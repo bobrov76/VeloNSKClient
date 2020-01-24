@@ -1,7 +1,10 @@
-﻿using Plugin.Connectivity;
+﻿using Newtonsoft.Json;
+using Plugin.Connectivity;
+using Plugin.FilePicker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.APIServise.Model;
@@ -16,16 +19,17 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CompitentionsPage : ContentPage
     {
+        private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
+        private ParticipationService participationService = new ParticipationService();
         private CompetentionsServise competentionsServise = new CompetentionsServise();
         private DistantionsServise distantionsServise = new DistantionsServise();
-        private ParticipationService participationService = new ParticipationService();
-        private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
+        private GetClientServise getClientServise = new GetClientServise();
         private ConnectClass connectClass = new ConnectClass();
-        private links picture_lincs = new links();
         private Animations animations = new Animations();
-        private bool animate;
-        private bool alive = true;
+        private links picture_lincs = new links();
         private DateTime SelectedDate;
+        private bool alive = true;
+        private bool animate;
 
         public CompitentionsPage()
         {
@@ -33,11 +37,30 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
-
-            Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             showEmployeeAsync();
+
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
+            Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             Device.StartTimer(TimeSpan.FromSeconds(10), OnTimerTickAsync);
+
+            btnImport.Clicked += async (s, e) =>
+            {
+                await Import();
+            };
+            btnAddExport.Clicked += async (s, e) =>
+            {
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                switch (res)
+                {
+                    case "Скачать шаблон":
+                        await DownloadSimple();
+                        break;
+
+                    case "Экспортировать":
+                        await Export();
+                        break;
+                }
+            };
 
             Back_Button.Clicked += async (s, e) =>
             {
@@ -65,6 +88,7 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                 }
                 catch { }
             };
+
             PoiskDate.MinimumDate = DateTime.Today;
 
             PoiskDate.DateSelected += async (s, e) =>
@@ -106,7 +130,6 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
         private bool OnTimerTickAsync()
         {
             Get_Time();
-
             return alive;
         }
 
@@ -196,8 +219,6 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                         bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить элемент?", "Да", "Нет");
                         if (result == true)
                         {
-                            // IEnumerable<Competentions> competentions = await competentionsServise.Get();
-
                             IEnumerable<Participation> participations = await participationService.Get();
                             Competentions Del_compitentions = await competentionsServise.Delete(Convert.ToInt32(obj));
                             var selectad = participations.FirstOrDefault(p => p.IdCompetentions == Convert.ToInt32(obj));
@@ -213,8 +234,8 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                                     ResultParticipant Del_ResultPartisipation = await resultParticipationServise.Delete(id_res_part);
                                 }
                             }
-
                             await showEmployeeAsync();
+                            await DisplayAlert("Уведомление", "Компетенция успешно удалена", "Ok");
                         }
                         break;
                 }
@@ -225,6 +246,54 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
         public async Task Connect_ErrorAsync()
         {
             await Navigation.PushModalAsync(new ErrorConnectPage(), animate);
+        }
+
+        private async Task Export()
+        {
+            var file = await CrossFilePicker.Current.PickFile();
+            if (file != null)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
+                var httpClient = new HttpClient();
+                var servere_adres = "http://90.189.158.10/api/Competentious/";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                await httpResponseMasage.Content.ReadAsStringAsync();
+                await DisplayAlert("", "Экспорт успешно выполнен", "Ok");
+            }
+        }
+
+        private async Task DownloadSimple()
+        {
+            HttpClient client = getClientServise.GetClient();
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplateCompitentions.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
+        }
+
+        private async Task Import()
+        {
+            try
+            {
+                Main_RowDefinition_One.Height = 0;
+                Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
+                activityIndicator.IsRunning = true;
+                HttpClient client = getClientServise.GetClient();
+                string result = await client.GetStringAsync("http://90.189.158.10/api/Competentious/ExportCompetentious");
+                string path = JsonConvert.DeserializeObject<string>(result);
+                path = path.Replace(" ", string.Empty);
+
+                var response = await client.GetStreamAsync(path);
+                var filePath = await response.SaveToLocalFolderAsync($"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.xlsx");
+
+                await Task.Delay(3000);
+                Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
+                Main_RowDefinition_Activity.Height = 0;
+                activityIndicator.IsRunning = false;
+                await DisplayAlert("", "Импорт успешно выполнен", "Ok");
+                await DisplayAlert("", filePath, "Ok");
+            }
+            catch { }
         }
     }
 }

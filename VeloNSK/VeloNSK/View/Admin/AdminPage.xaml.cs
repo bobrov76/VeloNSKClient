@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.HelpClass.Connected;
 using VeloNSK.HelpClass.Style;
+using VeloNSK.View;
 using VeloNSK.View.Admin;
 using VeloNSK.View.Admin.Participations;
 using VeloNSK.View.Admin.Participations.Distanse;
@@ -34,38 +35,45 @@ namespace VeloNSK
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
 
+            Block_Button_Main_Profil.Clicked += async (s, e) =>
+            {
+                animations.Animations_Button(Block_Button_Main_One);
+                await Task.Delay(300);
+                await Navigation.PushModalAsync(new PersonalAccountPage(), animate);
+            };
+
             Block_Button_Main_One.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_One);
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await Navigation.PushModalAsync(new PartisipantMenuPage(), animate);
             };
 
             Block_Button_Main_Two.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_Two);
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await Navigation.PushModalAsync(new UsersСontrolPage(), animate);
             };
 
             Block_Button_Main_Three.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_Three);
-                await Task.Delay(700);
-                await Navigation.PushModalAsync(new PhotoGaleri(), animate);
+                await Task.Delay(300);
+                await Navigation.PushModalAsync(new RedactingGaleriPage(), animate);
             };
 
-            Block_Button_Main_Fore.Clicked += async (s, e) =>
-            {
-                animations.Animations_Button(Block_Button_Main_Fore);
-                await Task.Delay(700);
-                await Navigation.PushModalAsync(new DistantionPage(), animate);
-            };
+            //Block_Button_Main_Fore.Clicked += async (s, e) =>
+            //{
+            //    animations.Animations_Button(Block_Button_Main_Fore);
+            //    await Task.Delay(300);
+            //    await DisplayAlert("");
+            //};
             Head_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Head_Button);
                 App.Current.Properties["token"] = "";
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await Navigation.PushModalAsync(new MainPage(), animate);
             };
         }

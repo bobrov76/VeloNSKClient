@@ -72,7 +72,7 @@
                 <Button x:Name="Block_Button_Main_One" Text="Чемпионаты" Style="{StaticResource Head_Button}" />
                 <Button x:Name="Block_Button_Main_Two" Text="Пользователи" Style="{StaticResource Head_Button}" />
                 <Button x:Name="Block_Button_Main_Three" Text="Галлерея" Style="{StaticResource Head_Button}" />
-                <Button x:Name="Block_Button_Main_Fore" Text="Офисы" Style="{StaticResource Head_Button}" />
+                <!--<Button x:Name="Block_Button_Main_Fore" Text="Офисы" Style="{StaticResource Head_Button}" />-->
             </FlexLayout>
         </ScrollView>
         <!--Подвал-->

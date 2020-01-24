@@ -1,5 +1,4 @@
-﻿using Rg.Plugins.Popup.Pages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace VeloNSK
+namespace VeloNSK.View.Admin.ResultParticipation
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ActivityIndicatorPage : PopupPage
+    public partial class StatisticsPage : ContentPage
     {
-        public ActivityIndicatorPage()
+        public StatisticsPage()
         {
             InitializeComponent();
         }

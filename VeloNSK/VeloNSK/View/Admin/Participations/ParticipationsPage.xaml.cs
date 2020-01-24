@@ -1,8 +1,11 @@
-﻿using Plugin.Connectivity;
+﻿using Newtonsoft.Json;
+using Plugin.Connectivity;
+using Plugin.FilePicker;
 using Rg.Plugins.Popup.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.APIServise.Model;
@@ -19,7 +22,9 @@ namespace VeloNSK.View.Admin.Participations
     {
         private ParticipationService participationService = new ParticipationService();
         private CompetentionsServise competentionsServise = new CompetentionsServise();
+        private GetClientServise getClientServise = new GetClientServise();
         private RegistrationUsersService registrationUsersService = new RegistrationUsersService();
+        private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
         private CategoriYarsServise categoriYarsServise = new CategoriYarsServise();
         private DistantionsServise distantionsServise = new DistantionsServise();
         private ConnectClass connectClass = new ConnectClass();
@@ -88,6 +93,26 @@ namespace VeloNSK.View.Admin.Participations
                 {
                     SelectedDate = e.NewDate;
                     await Poisk("PoiskDate");
+                }
+            };
+
+            btnImport.Clicked += async (s, e) =>
+            {
+                await Import();
+            };
+
+            btnAddExport.Clicked += async (s, e) =>
+            {
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                switch (res)
+                {
+                    case "Скачать шаблон":
+                        await DownloadSimple();
+                        break;
+
+                    case "Экспортировать":
+                        await Export();
+                        break;
                 }
             };
         }
@@ -245,8 +270,15 @@ namespace VeloNSK.View.Admin.Participations
                         bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить элемент?", "Да", "Нет");
                         if (result == true)
                         {
-                            Distantion Del_Distantion = await distantionsServise.Delete(Convert.ToInt32(obj));
+                            IEnumerable<ResultParticipant> participations = await resultParticipationServise.Get();
+                            var selectad = participations.FirstOrDefault(p => p.IdParticipation == Convert.ToInt32(obj));
+                            Participation Del_Participation = await participationService.Delete(Convert.ToInt32(obj));
+                            if (selectad != null)
+                            {
+                                ResultParticipant Del_ResultPartisipation = await resultParticipationServise.Delete(selectad.IdResultParticipation);
+                            }
                             await showEmployeeAsync();
+                            await DisplayAlert("Уведомление", "Соревнование удалено", "Ok");
                         }
                         break;
                 }
@@ -257,6 +289,54 @@ namespace VeloNSK.View.Admin.Participations
         public async Task Connect_ErrorAsync()
         {
             await Navigation.PushModalAsync(new ErrorConnectPage(), animate);
+        }
+
+        private async Task Export()
+        {
+            var file = await CrossFilePicker.Current.PickFile();
+            if (file != null)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
+                var httpClient = new HttpClient();
+                var servere_adres = "http://90.189.158.10/api/Participation/";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                await httpResponseMasage.Content.ReadAsStringAsync();
+                await DisplayAlert("", "Экспорт успешно выполнен", "Ok");
+            }
+        }
+
+        private async Task DownloadSimple()
+        {
+            HttpClient client = getClientServise.GetClient();
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplatePartisipation.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
+        }
+
+        private async Task Import()
+        {
+            try
+            {
+                Main_RowDefinition_One.Height = 0;
+                Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
+                activityIndicator.IsRunning = true;
+                HttpClient client = getClientServise.GetClient();
+                string result = await client.GetStringAsync("http://90.189.158.10/api/Participation/ExportParticipation");
+                string path = JsonConvert.DeserializeObject<string>(result);
+                path = path.Replace(" ", string.Empty);
+
+                var response = await client.GetStreamAsync(path);
+                var filePath = await response.SaveToLocalFolderAsync($"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.xlsx");
+
+                await Task.Delay(3000);
+                Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
+                Main_RowDefinition_Activity.Height = 0;
+                activityIndicator.IsRunning = false;
+                await DisplayAlert("", "Импорт успешно выполнен", "Ok");
+                await DisplayAlert("", filePath, "Ok");
+            }
+            catch { }
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Plugin.Connectivity;
+﻿using Newtonsoft.Json;
+using Plugin.Connectivity;
+using Plugin.FilePicker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.APIServise.Model;
@@ -21,6 +24,7 @@ namespace VeloNSK.View.Admin.ResultParticipation
         private RegistrationUsersService registrationUsersService = new RegistrationUsersService();
         private ResultParticipationServise resultParticipationServise = new ResultParticipationServise();
         private DistantionsServise distantionsServise = new DistantionsServise();
+        private GetClientServise getClientServise = new GetClientServise();
         private ConnectClass connectClass = new ConnectClass();
         private links picture_lincs = new links();
         private Animations animations = new Animations();
@@ -43,16 +47,48 @@ namespace VeloNSK.View.Admin.ResultParticipation
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync();//Переход назад
             };
 
             btnAddRecord.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(btnAddRecord);
-                await Task.Delay(1000);
-                int nul = 0;
-                await Navigation.PushModalAsync(new AddResultParticipationPagePage(nul), animate);
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Добавить", "Импортировать", "Экспортировать", "Сформировать отчет", "Статистика");
+                switch (res)
+                {
+                    case "Добавить":
+                        animations.Animations_Button(btnAddRecord);
+                        await Task.Delay(300);
+                        int nul = 0;
+                        await Navigation.PushModalAsync(new AddResultParticipationPagePage(nul), animate);
+                        break;
+
+                    case "Импортировать":
+                        await Import();
+                        break;
+
+                    case "Экспортировать":
+                        string res_select = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                        switch (res_select)
+                        {
+                            case "Скачать шаблон":
+                                await DownloadSimple();
+                                break;
+
+                            case "Экспортировать":
+                                await Export();
+                                break;
+                        }
+                        break;
+
+                    case "Сформировать отчет":
+                        await Navigation.PushModalAsync(new ReportsPage());
+                        break;
+
+                    case "Статистика":
+                        await Navigation.PushModalAsync(new StatisticsPage());
+                        break;
+                }
             };
 
             PoiskLogin.TextChanged += async (s, e) =>
@@ -234,7 +270,7 @@ namespace VeloNSK.View.Admin.ResultParticipation
             {
                 string obj = e.SelectedItem.ToString();
                 obj = obj.Substring(obj.LastIndexOf(',') + 1).Replace("IdResultParticipation = ", string.Empty).Replace("}", string.Empty);
-                DisplayAlert("", obj.ToString(), "Ok");
+
                 string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Подробнее", "Обновить данные", "Удалить данные");
                 switch (res)
                 {
@@ -250,8 +286,9 @@ namespace VeloNSK.View.Admin.ResultParticipation
                         bool result = await DisplayAlert("Подтвердить действие", "Вы хотите удалить элемент?", "Да", "Нет");
                         if (result == true)
                         {
-                            Distantion Del_Distantion = await distantionsServise.Delete(Convert.ToInt32(obj));
+                            ResultParticipant Del = await resultParticipationServise.Delete(Convert.ToInt32(obj));
                             await showEmployeeAsync();
+                            await DisplayAlert("Уведомление", "Итог соревнования удален", "Ok");
                         }
                         break;
                 }
@@ -262,6 +299,54 @@ namespace VeloNSK.View.Admin.ResultParticipation
         public async Task Connect_ErrorAsync()
         {
             await Navigation.PushModalAsync(new ErrorConnectPage(), animate);
+        }
+
+        private async Task Export()
+        {
+            var file = await CrossFilePicker.Current.PickFile();
+            if (file != null)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
+                var httpClient = new HttpClient();
+                var servere_adres = "http://90.189.158.10/api/Resultpartisipations/";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                await httpResponseMasage.Content.ReadAsStringAsync();
+                await DisplayAlert("", "Экспорт успешно выполнен", "Ok");
+            }
+        }
+
+        private async Task DownloadSimple()
+        {
+            HttpClient client = getClientServise.GetClient();
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplateResultpartisipations.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
+        }
+
+        private async Task Import()
+        {
+            try
+            {
+                Main_RowDefinition_One.Height = 0;
+                Main_RowDefinition_Activity.Height = new GridLength(1, GridUnitType.Star);
+                activityIndicator.IsRunning = true;
+                HttpClient client = getClientServise.GetClient();
+                string result = await client.GetStringAsync("http://90.189.158.10/api/Resultpartisipations/ExportParticipation");
+                string path = JsonConvert.DeserializeObject<string>(result);
+                path = path.Replace(" ", string.Empty);
+                DisplayAlert("", path, "ok");
+                var response = await client.GetStreamAsync(path);
+                var filePath = await response.SaveToLocalFolderAsync($"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.xlsx");
+
+                await Task.Delay(3000);
+                Main_RowDefinition_One.Height = new GridLength(1, GridUnitType.Star);
+                Main_RowDefinition_Activity.Height = 0;
+                activityIndicator.IsRunning = false;
+                await DisplayAlert("", "Импорт успешно выполнен", "Ok");
+                await DisplayAlert("", filePath, "Ok");
+            }
+            catch { }
         }
     }
 }

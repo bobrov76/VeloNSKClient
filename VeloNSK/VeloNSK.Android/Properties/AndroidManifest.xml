@@ -15,7 +15,7 @@
 	<application>
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyClLzWW5D51CZ7rXCZCTbAGx93hXxYetPw" />
 		<!-- ADD FILE PROVIDER HERE -->
-		<provider android:name="android.support.v4.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
+		<provider android:name="android.support.v4.content.FileProvider" android:authorities="VeloNSK.Android.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths"></meta-data>
 		</provider>
 	</application>

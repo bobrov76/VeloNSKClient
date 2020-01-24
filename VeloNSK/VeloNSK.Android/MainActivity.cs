@@ -1,5 +1,4 @@
-﻿
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
@@ -11,10 +10,11 @@ using FFImageLoading.Forms.Platform;
 
 namespace VeloNSK.Droid
 {
-    [Activity(Label = "VeloNSK", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "VeloNSK", Icon = "@mipmap/logo", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private Bundle bundle;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             CrossFingerprint.SetCurrentActivityResolver(() => CrossCurrentActivity.Current.Activity);
@@ -24,7 +24,7 @@ namespace VeloNSK.Droid
             Xamarin.FormsMaps.Init(this, bundle);
             Xamarin.Forms.DataGrid.DataGridComponent.Init();
             base.OnCreate(savedInstanceState);
-            CrossMedia.Current.Initialize();            
+            CrossMedia.Current.Initialize();
             ImageCircleRenderer.Init();
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -32,12 +32,12 @@ namespace VeloNSK.Droid
             CachedImageRenderer.InitImageViewHandler();
             LoadApplication(new App());
         }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-     
     }
 }

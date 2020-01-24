@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
+using Plugin.FilePicker;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.APIServise.Model;
@@ -119,6 +122,25 @@ namespace VeloNSK
                     await Poisk("PoiskStatusHels");
                 }
             };
+
+            btnImport.Clicked += async (s, e) =>
+            {
+                await Import();
+            };
+            btnAddExport.Clicked += async (s, e) =>
+            {
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                switch (res)
+                {
+                    case "Скачать шаблон":
+                        await DownloadSimple();
+                        break;
+
+                    case "Экспортировать":
+                        await Export();
+                        break;
+                }
+            };
         }
 
         private async Task Poisk(string filtr)
@@ -230,6 +252,47 @@ namespace VeloNSK
         public async Task Connect_ErrorAsync()
         {
             await Navigation.PushModalAsync(new ErrorConnectPage(), animate);
+        }
+
+        private async Task Export()
+        {
+            var file = await CrossFilePicker.Current.PickFile();
+            if (file != null)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
+                var httpClient = new HttpClient();
+                var servere_adres = "http://90.189.158.10/api/Exel/";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                await httpResponseMasage.Content.ReadAsStringAsync();
+                await DisplayAlert("", "Экспорт успешно выполнен", "Ok");
+            }
+        }
+
+        private async Task DownloadSimple()
+        {
+            HttpClient client = getClientServise.GetClient();
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplateExportUser.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
+        }
+
+        private async Task Import()
+        {
+            try
+            {
+                HttpClient client = getClientServise.GetClient();
+                string result = await client.GetStringAsync("http://90.189.158.10/api/Exel/ExportUser");
+                string path = JsonConvert.DeserializeObject<string>(result);
+                path = path.Replace(" ", string.Empty);
+
+                var response = await client.GetStreamAsync(path);
+                var filePath = await response.SaveToLocalFolderAsync($"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.xlsx");
+
+                await DisplayAlert("", "Импорт успешно выполнен", "Ok");
+                await DisplayAlert("", filePath, "Ok");
+            }
+            catch { }
         }
 
         private void ScrollView_Scrolled(object sender, ScrolledEventArgs e)

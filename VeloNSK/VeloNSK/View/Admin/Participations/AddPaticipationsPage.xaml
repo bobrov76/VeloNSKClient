@@ -47,17 +47,17 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="500" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.2" x:Name="Login_RowDefinition_Ziro" />
-                <RowDefinition Height="4*" x:Name="Login_RowDefinition_One" />
-                <RowDefinition Height="0.2" x:Name="Login_RowDefinition_Two" />
+                <RowDefinition Height="*" x:Name="Login_RowDefinition_Ziro" />
+                <RowDefinition Height="640" x:Name="Login_RowDefinition_One" />
+                <RowDefinition Height="*" x:Name="Login_RowDefinition_Two" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="1" Grid.Column="1" x:Name="GridMain">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>

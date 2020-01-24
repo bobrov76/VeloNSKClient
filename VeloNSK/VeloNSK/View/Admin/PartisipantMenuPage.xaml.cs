@@ -9,6 +9,7 @@ using VeloNSK.HelpClass.Style;
 using VeloNSK.View.Admin.Participations;
 using VeloNSK.View.Admin.Participations.Compitentions;
 using VeloNSK.View.Admin.Participations.Distanse;
+using VeloNSK.View.Admin.ResultParticipation;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -35,35 +36,35 @@ namespace VeloNSK.View.Admin
             Block_Button_Main_One.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_One);
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await Navigation.PushModalAsync(new DistantionPage(), animate);
             };
 
             Block_Button_Main_Two.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_Two);
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await Navigation.PushModalAsync(new CompitentionsPage(), animate);
             };
 
             Block_Button_Main_Three.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_Three);
-                await Task.Delay(700);
-                await Navigation.PushModalAsync(new PartisipantPage(), animate);
+                await Task.Delay(300);
+                await Navigation.PushModalAsync(new ParticipationsPage(), animate);
             };
 
             Block_Button_Main_Fore.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Block_Button_Main_Fore);
-                await Task.Delay(700);
-                // await Navigation.PushModalAsync(new PartisipantPage(), animate);//новое соревнование
+                await Task.Delay(300);
+                await Navigation.PushModalAsync(new ResultParticipationPage(), animate);//новое соревнование
             };
 
             Head_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Head_Button);
-                await Task.Delay(700);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync(animate);
             };
         }

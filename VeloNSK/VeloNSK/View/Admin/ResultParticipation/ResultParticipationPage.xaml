@@ -75,7 +75,7 @@
                 <RowDefinition Height="*" x:Name="YesRecords" />
                 <RowDefinition Height="0" x:Name="NoRecords" />
             </Grid.RowDefinitions>
-            <Label x:Name="Name_Lable" Text="Дистанции" FontAttributes="Bold" Style="{StaticResource Head_Lable}" TextColor="Black" />
+            <Label x:Name="Name_Lable" Text="Итоги соревнований" FontAttributes="Bold" Style="{StaticResource Head_Lable}" TextColor="Black" />
 
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
@@ -86,9 +86,7 @@
                     <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="150" />
                 </Grid.ColumnDefinitions>
-                <Button Text="Добавить" x:Name="btnAddRecord" Margin="10,0,10,10" />
-                <Button Text="Импортировать"  Grid.Column="1" x:Name="btnImport" Margin="0,0,10,10" />
-                <Button Text="Экспортировать"  Grid.Column="2" x:Name="btnAddExport" Margin="0,0,10,10" />
+                <Button Text="Возможности" x:Name="btnAddRecord" Margin="10,0,10,10" />
             </Grid>
             <Grid Grid.Row="2">
                 <Grid>

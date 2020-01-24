@@ -143,7 +143,7 @@
                 <Label x:Name="NoRecord_Lable" Text="Записей с такими параметрами не найдено" TextColor="Black" FontSize="Subtitle" Style="{StaticResource Bottom_Lable}" />
             </Grid>
         </Grid>
-        <ActivityIndicator Grid.Row="2"  x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
+        <ActivityIndicator Grid.Row="2" x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
         <!--Подвал-->
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
