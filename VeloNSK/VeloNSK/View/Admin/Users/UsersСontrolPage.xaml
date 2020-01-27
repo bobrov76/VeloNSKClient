@@ -82,13 +82,11 @@
                     <RowDefinition Height="50"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="160" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="210" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Text="Добавить" x:Name="btnAddRecord" Margin="10,0,10,10" />
-                <Button Text="Импортировать"  Grid.Column="1" x:Name="btnImport" Margin="0,0,10,10" />
-                <Button Text="Экспортировать"  Grid.Column="2" x:Name="btnAddExport" Margin="0,0,10,10" />
+                <Button Text="Манипулирование данными" Grid.Column="1" x:Name="btnAddRecord" Margin="0,0,0,15" />
             </Grid>
 
             <Grid Grid.Row="2">
@@ -99,8 +97,6 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="170" />
-                        <ColumnDefinition Width="200" />
-                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="70" />
@@ -111,12 +107,10 @@
                             <Behaviors:MaskedBehavior Mask="+7(XXX) XXX-XX-XX" />
                         </Entry.Behaviors>
                     </Entry>
-                    <Entry x:Name="PoiskEmail" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по E-mail" Grid.Column="1" Margin="10,0,10,0" />
                     <Entry x:Name="PoiskName" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по имени" Keyboard="Numeric" Grid.Column="2" Margin="10,0,10,0" />
                     <Entry x:Name="PoiskFam" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по фамилии" Grid.Column="3" Margin="10,0,10,0" />
-                    <Entry x:Name="PoiskPatronimic" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по отчеству" Grid.Column="4" Margin="10,0,10,0" />
 
-                    <dg:DataGrid x:Name="lstData"  SelectionEnabled="True" Grid.ColumnSpan="6" Grid.Row="1" ItemSelected="lstData_ItemSelected"
+                    <dg:DataGrid x:Name="lstData"  SelectionEnabled="True" Grid.ColumnSpan="4" Grid.Row="1" ItemSelected="lstData_ItemSelected"
 						     RowHeight="70" HeaderHeight="50" BorderColor="#CCCCCC" HeaderBackground="#E0E6F8" ActiveRowColor="#8899AA">
                         <x:Arguments>
                             <ListViewCachingStrategy>RetainElement</ListViewCachingStrategy>
@@ -129,10 +123,8 @@
                         </dg:DataGrid.HeaderFontSize>
                         <dg:DataGrid.Columns>
                             <dg:DataGridColumn Title="Login" PropertyName="Login" Width="170" />
-                            <dg:DataGridColumn Title="E-mail" PropertyName="Email" Width="200" />
                             <dg:DataGridColumn Title="Имя" PropertyName="Name"  Width="*" />
                             <dg:DataGridColumn Title="Фамилия" PropertyName="Fam" Width="*" />
-                            <dg:DataGridColumn Title="Отчество" PropertyName="Patronimic" Width="*" />
                             <dg:DataGridColumn Title="Роль" PropertyName="Rol" Width="70" />
                         </dg:DataGrid.Columns>
                         <dg:DataGrid.RowsBackgroundColorPalette>

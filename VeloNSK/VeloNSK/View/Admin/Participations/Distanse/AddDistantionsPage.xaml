@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Admin.Participations.Distanse.AddDistantionsPage"   x:Name="Fon">
+             x:Class="VeloNSK.View.Admin.Participations.Distanse.AddDistantionsPage"   x:Name="Fon" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -46,7 +46,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="480" />
+                <ColumnDefinition Width="2.2*" x:Name="Login_ColumnDefinition_One" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>

@@ -35,8 +35,8 @@ namespace VeloNSK
 
         public LoginPage()
         {
-            if (!connectClass.CheckConnection()) Connect_ErrorAsync();//Проверка интернет соединения
             InitializeComponent();
+            if (!connectClass.CheckConnection()) Connect_ErrorAsync();//Проверка интернет соединения
 
             string PIN = App.Current.Properties["pin_code"].ToString();
 
@@ -45,8 +45,7 @@ namespace VeloNSK
                 AutoLogin_CheckBox.IsChecked = true;
             }
             else { AutoLogin_CheckBox.IsChecked = false; }
-
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon()); ;//Устанавливаем фон
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             password_status_image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "anvisible_password.png");
             Users_Fon_Images.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "UserFon.png");
             Password_Entry.Text = "";
@@ -175,7 +174,7 @@ namespace VeloNSK
                     Error_Password_Lable.Text = "Поле Login или пароль незаполно";
                 }
             }
-            catch { await DisplayAlert("Ошибка", "Поле Login или пароль незаполно", "Ok"); }
+            catch { await DisplayAlert("Ошибка", "Поля незаполнены", "Ok"); }
         }
 
         private bool OnTimerTick()//Обработка времени на выполнение
@@ -198,11 +197,15 @@ namespace VeloNSK
         {
             if (size_form.GetHeightSize() > size_form.GetWidthSize())
             {
-                Login_ColumnDefinition_One.Width = new GridLength(4, GridUnitType.Star);
+                Login_ColumnDefinition_Ziro.Width = 20;
+                Login_ColumnDefinition_One.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_Two.Width = 20;
             }
             else
             {
+                Login_ColumnDefinition_Ziro.Width = new GridLength(1, GridUnitType.Star);
                 Login_ColumnDefinition_One.Width = 400;
+                Login_ColumnDefinition_Two.Width = new GridLength(1, GridUnitType.Star);
             }
         }
 

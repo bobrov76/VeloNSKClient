@@ -44,18 +44,20 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ScrollView Margin="0,20,0,20">
+    <ScrollView>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="4*" x:Name="Login_ColumnDefinition_One" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.2*" x:Name="Login_RowDefinition_Ziro" />
-                <RowDefinition Height="4*" x:Name="Login_RowDefinition_One" />
-                <RowDefinition Height="0.2*" x:Name="Login_RowDefinition_Two" />
+                <RowDefinition Height="15" x:Name="Login_RowDefinition_Ziro" />
+                <RowDefinition Height="1000" x:Name="Login_RowDefinition_One" />
+                <RowDefinition Height="0" x:Name="Main_RowDefinition_Activity" />
+                <RowDefinition Height="15" x:Name="Login_RowDefinition_Two" />
             </Grid.RowDefinitions>
+            <Image x:Name="image_fon" Grid.RowSpan="4" Grid.ColumnSpan="3" Aspect="Fill" />
             <Grid Grid.Row="1" Grid.Column="1" x:Name="Main_Grid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
@@ -68,10 +70,10 @@
                     <RowDefinition Height="0" x:Name="Error_Login_RowDefinition" />
                     <RowDefinition Height="40" />
                     <RowDefinition Height="0" x:Name="Error_Email_RowDefinition" />
-                    <RowDefinition Height="40" />
-                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" x:Name="Grid_One" />
+                    <RowDefinition Height="40" x:Name="Grid_Two" />
                     <RowDefinition Height="0" x:Name="Error_Password_RowDefinition" />
-                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" x:Name="Grid_Fore" />
                     <RowDefinition Height="40" />
                     <RowDefinition Height="40" />
                     <RowDefinition Height="40" />
@@ -81,9 +83,9 @@
                     <RowDefinition Height="70" />
                     <RowDefinition Height="20" />
                 </Grid.RowDefinitions>
-                <BoxView Grid.RowSpan="18" Grid.ColumnSpan="2" BackgroundColor="Gray" Opacity="0.7" />
-                <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Регистрация" FontSize="Title" Style="{StaticResource Head_Lable}" />
-
+                <BoxView Opacity="0.6" BackgroundColor="#737373" Grid.RowSpan="18" Grid.ColumnSpan="2" />
+                <Image x:Name="Users_Fon_Images" Aspect="Fill" Opacity="0.8" Grid.RowSpan="18" Grid.ColumnSpan="2" />
+                <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Регистрация"  HorizontalOptions="Center" VerticalOptions="Center"  FontSize="Subtitle" TextColor="Black" />
                 <!--Фото-->
                 <Grid Grid.ColumnSpan="2" Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -109,11 +111,13 @@
                         <Behaviors:MaskedBehavior Mask="+7(XXX) XXX-XX-XX" />
                     </Entry.Behaviors>
                 </Entry>
+                <Label Grid.Row="2" Grid.Column="1" IsVisible="False" x:Name="Login_Lable_Entry" Margin="10,0,10,0" HorizontalOptions="Start" Style="{StaticResource Main_Lable}" />
                 <Label Grid.Row="3" Grid.ColumnSpan="2" x:Name="Error_Login_Lable" Style="{StaticResource Error_Lable}" />
 
                 <!--Блок E-mail-->
                 <Label Grid.Row="4" x:Name="Email_Lable" Text="E-mail: " Style="{StaticResource Main_Lable}" />
                 <Entry Grid.Row="4" Grid.Column="1" x:Name="Email_Entry" Placeholder = "admin@mail.ru" Margin="10,0,10,0" Style="{StaticResource Main_Entry}" MaxLength="30" />
+                <Label Grid.Row="4" Grid.Column="1" IsVisible="False" x:Name="Email_Lable_Entry" Margin="10,0,10,0" HorizontalOptions="Start" Style="{StaticResource Main_Lable}" />
                 <Label Grid.Row="5" Grid.ColumnSpan="2" x:Name="Error_Email_Lable" Style="{StaticResource Error_Lable}" />
 
                 <!--Пароль-->
@@ -157,9 +161,9 @@
                 </Picker>
                 <Grid Grid.Row="15" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.9*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="70" />
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="1.1*" />
+                        <ColumnDefinition Width="60" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -168,6 +172,7 @@
                     <Label x:Name="Yars_Lable" Text="Возраст: " FontSize="Small" Style="{StaticResource Main_Lable}" />
                     <Entry Grid.Column="1" x:Name="Yars_Entry" Margin="5,5,0,5" HorizontalOptions="Start"  Placeholder="20" Style="{StaticResource Main_Entry}" />
                     <Label Grid.Column="2" x:Name="Rol_Lable" FontSize="Small" Text="Роль: " HorizontalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="End" VerticalTextAlignment="Center" />
+                    <Label Grid.Column="3" IsVisible="False" x:Name="Time_Lable_Picer" Margin="10,0,10,0" HorizontalOptions="Start" Style="{StaticResource Main_Lable}" />
                     <Picker Grid.Column="3" x:Name="Rol_Picker" HorizontalOptions="Start" Margin="10,-15,10,0">
                         <Picker.Items>
                             <x:String>Администратор</x:String>
@@ -188,6 +193,7 @@
                     <Button x:Name="Back_Button" Text = "Отмена" Style="{StaticResource Head_Button}" />
                 </Grid>
             </Grid>
+            <ActivityIndicator Grid.Row="2" Scale="3" Grid.Column="1" x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
         </Grid>
     </ScrollView>
 </ContentPage>

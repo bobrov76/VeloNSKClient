@@ -45,61 +45,68 @@ namespace VeloNSK
             showEmployeeAsync();
             Back_Button.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                //animations.Animations_Button(Back_Button);
+                //await Task.Delay(1000);
                 await Navigation.PopModalAsync();//Переход назад
             };
 
             btnAddRecord.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(btnAddRecord);
-                await Task.Delay(1000);
-                int nul = 0;
-                await Navigation.PushModalAsync(new AddUsersPage(nul, "Admin"), animate);
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Добавить данные", "Импортировать данные", "Экспортировать данные");
+                switch (res)
+                {
+                    case "Добавить данные":
+                        int nul = 0;
+                        await Navigation.PushModalAsync(new AddUsersPage(nul, "Admin"), animate);
+                        break;
+
+                    case "Импортировать данные":
+                        await Import();
+                        break;
+
+                    case "Экспортировать данные":
+                        string res_export = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                        switch (res_export)
+                        {
+                            case "Скачать шаблон":
+                                await DownloadSimple();
+                                break;
+
+                            case "Экспортировать":
+                                await Export();
+                                break;
+                        }
+                        break;
+                }
+                //animations.Animations_Button(btnAddRecord);
+                //await Task.Delay(1000);
             };
 
             PoiskLogin.TextChanged += async (s, e) =>
             {
-                await Poisk("PoiskLogin");
-            };
-
-            PoiskEmail.TextChanged += async (s, e) =>
-            {
-                await Poisk("PoiskEmail");
+                try
+                {
+                    await Poisk("PoiskLogin");
+                }
+                catch { }
             };
 
             PoiskName.TextChanged += async (s, e) =>
             {
-                await Poisk("PoiskName");
+                try
+                {
+                    await Poisk("PoiskName");
+                }
+                catch { }
             };
 
             PoiskFam.TextChanged += async (s, e) =>
             {
-                await Poisk("PoiskFam");
-            };
-
-            PoiskPatronimic.TextChanged += async (s, e) =>
-            {
-                await Poisk("PoiskPatronimic");
-            };
-
-            btnImport.Clicked += async (s, e) =>
-            {
-                await Import();
-            };
-            btnAddExport.Clicked += async (s, e) =>
-            {
-                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
-                switch (res)
+                try
                 {
-                    case "Скачать шаблон":
-                        await DownloadSimple();
-                        break;
-
-                    case "Экспортировать":
-                        await Export();
-                        break;
+                    await Poisk("PoiskFam");
                 }
+                catch { }
             };
         }
 
@@ -111,8 +118,6 @@ namespace VeloNSK
                 case "PoiskLogin": infoUsers = infoUsers.Where(p => p.Login == PoiskLogin.Text || p.Login.StartsWith(PoiskLogin.Text)); break;
                 case "PoiskName": infoUsers = infoUsers.Where(p => p.Name == PoiskName.Text || p.Name.StartsWith(PoiskName.Text)); break;
                 case "PoiskFam": infoUsers = infoUsers.Where(p => p.Fam == PoiskFam.Text || p.Fam.StartsWith(PoiskFam.Text)); break;
-                case "PoiskEmail": infoUsers = infoUsers.Where(p => p.Email == PoiskEmail.Text || p.Email.StartsWith(PoiskEmail.Text)); break;
-                case "PoiskPatronimic": infoUsers = infoUsers.Where(p => p.Patronimic == PoiskPatronimic.Text || p.Patronimic.StartsWith(PoiskPatronimic.Text)); break;
             }
             var res = infoUsers.ToList();
             if (res.Count != 0)
@@ -229,8 +234,8 @@ namespace VeloNSK
         private async Task DownloadSimple()
         {
             HttpClient client = getClientServise.GetClient();
-            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplateExportUser.xlsx");
-            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/UserExportSimple.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для экспорта информации о участниках" + $"{DateTime.Now.ToString("ddMMyyyyhhmmss")}" + ".xlsx");
             await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
         }
 
@@ -247,7 +252,6 @@ namespace VeloNSK
                 var filePath = await response.SaveToLocalFolderAsync($"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.xlsx");
 
                 await DisplayAlert("", "Импорт успешно выполнен", "Ok");
-                await DisplayAlert("", filePath, "Ok");
             }
             catch { }
         }

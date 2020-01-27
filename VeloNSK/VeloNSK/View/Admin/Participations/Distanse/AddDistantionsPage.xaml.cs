@@ -181,5 +181,23 @@ namespace VeloNSK.View.Admin.Participations.Distanse
                 if (!await DisplayAlert("Ошибка", "Вы заполнили не все поля", "Заполнить", "Выйти")) { await Navigation.PopModalAsync(); }
             }
         }
+
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
+        private new void SizeChanged(object sender, EventArgs e) //Стилизация
+        {
+            if (size_form.GetHeightSize() > size_form.GetWidthSize())
+            {
+                Login_ColumnDefinition_Ziro.Width = 20;
+                Login_ColumnDefinition_One.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_Two.Width = 20;
+            }
+            else
+            {
+                Login_ColumnDefinition_Ziro.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_One.Width = 480;
+                Login_ColumnDefinition_Two.Width = new GridLength(1, GridUnitType.Star);
+            }
+        }
     }
 }

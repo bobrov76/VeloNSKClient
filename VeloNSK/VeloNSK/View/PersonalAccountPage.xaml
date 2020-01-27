@@ -73,7 +73,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="70" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -86,37 +85,36 @@
             <!-- can change orientation to make responsive -->
             <Grid HorizontalOptions="Center">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="0" />
                     <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="0" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10" />
+                    <RowDefinition Height="0" />
                     <RowDefinition Height="200" />
-                    <RowDefinition Height="10" />
+                    <RowDefinition Height="0" />
                 </Grid.RowDefinitions>
-                <controls:CircleImage Grid.Column="1" Grid.Row="1" BorderThickness="3" BorderColor="Black" x:Name="User_Image" WidthRequest="200" HeightRequest="200" HorizontalOptions="Center" VerticalOptions="Center" />
+                <controls:CircleImage Grid.Column="1" Grid.Row="1" Margin="0,-55,0,0" BorderThickness="3" BorderColor="Black" x:Name="User_Image" WidthRequest="200" HeightRequest="200" HorizontalOptions="Center" VerticalOptions="Center" />
             </Grid>
             <ScrollView>
-                <StackLayout Spacing="5" HorizontalOptions="FillAndExpand"
-                    WidthRequest="1000">
+                <StackLayout Spacing="5" HorizontalOptions="FillAndExpand">
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="Login_Lable" Text="Login: " Margin="20,0,0,0" Style="{StaticResource Main_Lable}" />
+                        <Label x:Name="Login_Lable" Text="Login: " Margin="40,0,0,0" Style="{StaticResource Main_Lable}" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="FIO_Lable" Text="ФИО: " Margin="20,0,0,0" Style="{StaticResource Main_Lable}" />
+                        <Label x:Name="FIO_Lable" Text="ФИО: " Margin="40,0,0,0" Style="{StaticResource Main_Lable}" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="Yars_Lable" Text="Возраст: " Margin="20,0,0,0" Style="{StaticResource Main_Lable}" />
+                        <Label x:Name="Yars_Lable" Text="Возраст: " Margin="40,0,0,0" Style="{StaticResource Main_Lable}" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="Pol_Lable" Text="Пол: " Margin="20,0,0,0" Style="{StaticResource Main_Lable}" />
+                        <Label x:Name="Pol_Lable" Text="Пол: " Margin="40,0,0,0" Style="{StaticResource Main_Lable}" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="StatusHels_Lable" Text="Статус здоровья: " Margin="20,0,0,0" Style="{StaticResource Main_Lable}" />
+                        <Label x:Name="StatusHels_Lable" Text="Статус здоровья: " Margin="40,0,0,0" Style="{StaticResource Main_Lable}" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="Email_Lable" Text="E-mail: " Margin="20,0,0,0" Style="{StaticResource Main_Lable}" />
+                        <Label x:Name="Email_Lable" Text="E-mail: " Margin="40,0,0,0" Style="{StaticResource Main_Lable}" />
                     </StackLayout>
                 </StackLayout>
             </ScrollView>

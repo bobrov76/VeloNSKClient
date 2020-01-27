@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Admin.Participations.Compitentions.AddCompitentionsPage">
+             x:Class="VeloNSK.View.Admin.Participations.Compitentions.AddCompitentionsPage" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -47,7 +47,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="2*" x:Name="Login_ColumnDefinition_One" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>

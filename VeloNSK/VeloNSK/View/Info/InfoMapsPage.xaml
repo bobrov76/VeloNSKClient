@@ -46,7 +46,7 @@
             <RowDefinition Height="60" x:Name="Main_RowDefinition_One" />
             <RowDefinition Height="*" x:Name="Main_RowDefinition_Two" />
             <RowDefinition Height="0" x:Name="Main_RowDefinition_Activiti" />
-            <RowDefinition Height="40" x:Name="Main_RowDefinition_Fore" />
+            <RowDefinition Height="30" x:Name="Main_RowDefinition_Fore" />
         </Grid.RowDefinitions>
         <Image x:Name="image_fon" Grid.RowSpan="5" Aspect="Fill" />
         <!--Шапка-->
@@ -69,12 +69,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="60" />
             </Grid.RowDefinitions>
             <Label HorizontalOptions="Center" VerticalOptions="Center" Text = "Как нас найти" Margin="10,10,0,10" TextColor="Black" Style="{StaticResource Head_Lable}" />
         </Grid>
         <!--Блок изображений-->
-        <WebView Grid.Row="2" x:Name="InfoUser_WebView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+        <WebView Grid.Row="2" x:Name="InfoUser_WebView" Margin="0,-10,0,-10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
         <!--Подвал-->
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>

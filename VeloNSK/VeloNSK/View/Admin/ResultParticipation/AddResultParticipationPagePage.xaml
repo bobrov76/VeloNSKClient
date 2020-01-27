@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Admin.ResultParticipation.AddResultParticipationPagePage">
+             x:Class="VeloNSK.View.Admin.ResultParticipation.AddResultParticipationPagePage" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -47,7 +47,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="560" />
+                <ColumnDefinition Width="3*" x:Name="Login_ColumnDefinition_One" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -75,7 +75,7 @@
                     <RowDefinition Height="20" />
                 </Grid.RowDefinitions>
                 <Image x:Name="Users_Fon_Images" Aspect="Fill" Opacity="0.8" Grid.ColumnSpan="2" Grid.RowSpan="11" />
-                <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Итоги соревнования" Style="{StaticResource Head_Lable}" />
+                <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Итоги соревнования" FontSize="Medium" Style="{StaticResource Head_Lable}" />
 
                 <!--Блок-->
                 <Label Grid.Row ="1" Text="Поиск пользователя: " Style="{StaticResource Main_Lable}" />

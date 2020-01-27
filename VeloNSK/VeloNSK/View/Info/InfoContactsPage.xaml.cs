@@ -24,17 +24,15 @@ namespace VeloNSK
 
         public InfoContactsPage()
         {
-            InitializeComponent();
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
-
-            App.Current.Properties["ID_Form"] = "InfoMemuPage";//ID формы для навигации
+            InitializeComponent();
 
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
             Head_Button.Clicked += async (s, e) => await Navigation.PopModalAsync();
-            Block_Button_One.Clicked += (s, e) => SetPhoneCell();
+            Block_Button_One.Clicked += async (s, e) => await SetPhoneCellAsync();
             Block_Button_Two.Clicked += (s, e) => PopupNavigation.Instance.PushAsync(new GetMasagesPopupPage());
         }
 
@@ -43,9 +41,16 @@ namespace VeloNSK
             await Navigation.PopModalAsync();
         } //Переход на страницу с ошибкой интернет соединения
 
-        private void SetPhoneCell()
+        private async Task SetPhoneCellAsync()
         {
-            messagingAPI.MakePhoneCall("+79876543210");
+            if (Device.Idiom == TargetIdiom.Desktop)
+            {
+                await DisplayAlert("Предупреждение", "К сожалению для компьютера данная функция недоступна", "Хорошо");
+            }
+            else
+            {
+                messagingAPI.MakePhoneCall("+79138976598");
+            }
         }
 
         private new void SizeChanged(object sender, EventArgs e)

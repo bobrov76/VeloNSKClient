@@ -6,7 +6,7 @@
              xmlns:dg="clr-namespace:Xamarin.Forms.DataGrid;assembly=Xamarin.Forms.DataGrid"
              xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Admin.ResultParticipation.ResultParticipationPage">
+             x:Class="VeloNSK.View.Admin.ResultParticipation.ResultParticipationPage" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -59,7 +59,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
+            <BoxView x:Name="Hend_BoxView" Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
             <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
             <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
             <Button x:Name="Back_Button" Text = "Back" Margin="10,10,0,10" Style="{StaticResource Head_Button}" />
@@ -82,16 +82,16 @@
                     <RowDefinition Height="50"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="160" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="210" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Button Text="Возможности" x:Name="btnAddRecord" Margin="10,0,10,10" />
+                <Button Text="Манипулирование данными" Grid.Column="1" x:Name="btnAddRecord" Margin="0,0,0,15" />
             </Grid>
             <Grid Grid.Row="2">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
+                        <RowDefinition Height="45" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -107,9 +107,12 @@
                         </Entry.Behaviors>
                     </Entry>
                     <Entry x:Name="PoiskNameDistans" FontAttributes="Bold" Grid.Column="1" HorizontalTextAlignment="Center" Placeholder="по дистанции" Margin="10,0,10,0" />
-                    <DatePicker x:Name="PoiskDate" Format="D" Grid.Column="2" Margin="0,0,10,0" WidthRequest="100" />
                     <Entry x:Name="PoiskStatus" FontAttributes="Bold" Grid.Column="3" HorizontalTextAlignment="Center" Placeholder="по статусу" Margin="10,0,10,0" />
-
+                    <Entry x:Name="ItogTime_Entry" Keyboard="Numeric" Grid.Column="2" Margin="10,0,10,0"  Placeholder="00:00:08:10">
+                        <Entry.Behaviors>
+                            <Behaviors:MaskedBehavior Mask="XX:XX:XX:XX" />
+                        </Entry.Behaviors>
+                    </Entry>
                     <dg:DataGrid x:Name="lstData" Grid.ColumnSpan="4" Grid.Row="1" SelectionEnabled="True"  ItemSelected="lstData_ItemSelected"
 						     RowHeight="70" HeaderHeight="50" BorderColor="#CCCCCC" HeaderBackground="#E0E6F8" ActiveRowColor="#8899AA">
                         <x:Arguments>

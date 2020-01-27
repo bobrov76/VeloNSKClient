@@ -54,7 +54,7 @@
             <RowDefinition Height="500" x:Name="Login_RowDefinition_One" />
             <RowDefinition Height="*" x:Name="Login_RowDefinition_Two" />
         </Grid.RowDefinitions>
-
+        <Image x:Name="image_fon" Grid.RowSpan="3" Grid.ColumnSpan="3" Aspect="Fill" />
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100" />

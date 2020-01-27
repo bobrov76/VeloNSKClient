@@ -28,13 +28,12 @@ namespace VeloNSK
         {
             InitializeComponent();
             InfoUser_WebView.Source = "http://90.189.158.10/Maps/index.html";
+            Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             LoadingAsync();
 
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
-
-            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
-            Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
             Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
         }

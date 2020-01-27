@@ -26,34 +26,45 @@ namespace VeloNSK
 
         public UserPage()
         {
-            InitializeComponent();
-
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon()); //Устанавливаем фон
+            InitializeComponent();
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
 
             Head_Button.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Head_Button);
-                await Task.Delay(300);
+                //animations.Animations_Button(Head_Button);
+                //await Task.Delay(300);
                 await Navigation.PushModalAsync(new MainPage(), animate);
             };
             Block_Button_Main_Profil.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_Main_Profil);
-                await Task.Delay(300);
+                //animations.Animations_Button(Block_Button_Main_Profil);
+                //await Task.Delay(300);
                 InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
                 await Navigation.PushModalAsync(new PersonalAccountPage(loginUsers.IdUsers, false), animate);
             };
 
             Block_Button_Main_One.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_Main_One);
-                await Task.Delay(300);
+                //animations.Animations_Button(Block_Button_Main_One);
+                //await Task.Delay(300);
                 await Navigation.PushModalAsync(new GegShempionatePage(), animate);
+            };
+            Block_Button_Main_Two.Clicked += async (s, e) =>
+            {
+                //animations.Animations_Button(Block_Button_Main_Two);
+                //await Task.Delay(300);
+                await Navigation.PushModalAsync(new MyPatisipantPage(), animate);
+            };
+
+            Block_Button_Main_Three.Clicked += async (s, e) =>
+            {
+                //animations.Animations_Button(Block_Button_Main_Three);
+                //await Task.Delay(300);
+                await Navigation.PushModalAsync(new MyResultPatisipantPage(), animate);
             };
         }
 

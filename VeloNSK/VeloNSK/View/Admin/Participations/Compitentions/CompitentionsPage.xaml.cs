@@ -43,25 +43,6 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
             Device.StartTimer(TimeSpan.FromSeconds(10), OnTimerTickAsync);
 
-            btnImport.Clicked += async (s, e) =>
-            {
-                await Import();
-            };
-            btnAddExport.Clicked += async (s, e) =>
-            {
-                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
-                switch (res)
-                {
-                    case "Скачать шаблон":
-                        await DownloadSimple();
-                        break;
-
-                    case "Экспортировать":
-                        await Export();
-                        break;
-                }
-            };
-
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
@@ -88,10 +69,34 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
 
             btnAddRecord.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(btnAddRecord);
-                await Task.Delay(1000);
-                int nul = 0;
-                await Navigation.PushModalAsync(new AddCompitentionsPage(nul), animate);
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Добавить данные", "Импортировать данные", "Экспортировать данные");
+                switch (res)
+                {
+                    case "Добавить данные":
+                        animations.Animations_Button(btnAddRecord);
+                        await Task.Delay(300);
+                        int nul = 0;
+                        await Navigation.PushModalAsync(new AddCompitentionsPage(nul), animate);
+                        break;
+
+                    case "Импортировать данные":
+                        await Import();
+                        break;
+
+                    case "Экспортировать данные":
+                        string res_export = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                        switch (res_export)
+                        {
+                            case "Скачать шаблон":
+                                await DownloadSimple();
+                                break;
+
+                            case "Экспортировать":
+                                await Export();
+                                break;
+                        }
+                        break;
+                }
             };
 
             PoiskName.TextChanged += async (s, e) =>
@@ -259,7 +264,7 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             if (file != null)
             {
                 var content = new MultipartFormDataContent();
-                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportDistans{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
+                content.Add(new StreamContent(file.GetStream()), "\"files\"", $"\"{$"ExportCompitention{DateTime.Now.ToString("ddMMyyyyhhmmss")}.xlsx"}\"");
                 var httpClient = new HttpClient();
                 var servere_adres = "http://90.189.158.10/api/Competentious/";
                 var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
@@ -268,11 +273,14 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
             }
         }
 
-        private async Task DownloadSimple()
+        private async Task DownloadSimple()//
         {
             HttpClient client = getClientServise.GetClient();
-            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplateCompitentions.xlsx");
-            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            string result = await client.GetStringAsync("http://90.189.158.10/api/Competentious/ExportSimple");
+            var itog = JsonConvert.DeserializeObject<string>(result);
+
+            var response = await client.GetStreamAsync(itog);
+            await response.SaveToLocalFolderAsync("Шаблон для компетенции" + $"{DateTime.Now.ToString("ddMMyyyyhhmmss")}" + ".xlsx");
             await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
         }
 
@@ -296,9 +304,40 @@ namespace VeloNSK.View.Admin.Participations.Compitentions
                 Main_RowDefinition_Activity.Height = 0;
                 activityIndicator.IsRunning = false;
                 await DisplayAlert("", "Импорт успешно выполнен", "Ok");
-                await DisplayAlert("", filePath, "Ok");
             }
             catch { }
+        }
+
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
+        private new void SizeChanged(object sender, EventArgs e)
+        {
+            double width = size_form.GetWidthSize();
+            double height = size_form.GetHeightSize();
+            if (width > height)
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 0;
+                    Main_RowDefinition_Three.Height = 0;
+                    Head_Image.IsVisible = false;
+                    Head_Lable.IsVisible = false;
+                    Back_Button.IsVisible = false;
+                    Hend_BoxView.IsVisible = false;
+                }
+            }
+            else
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 70;
+                    Main_RowDefinition_Three.Height = 40;
+                    Head_Image.IsVisible = true;
+                    Head_Lable.IsVisible = true;
+                    Back_Button.IsVisible = true;
+                    Hend_BoxView.IsVisible = true;
+                }
+            }
         }
     }
 }

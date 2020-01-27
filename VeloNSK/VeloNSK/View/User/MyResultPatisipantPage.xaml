@@ -3,11 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
              xmlns:dg="clr-namespace:Xamarin.Forms.DataGrid;assembly=Xamarin.Forms.DataGrid"
-             xmlns:conv="clr-namespace:VeloNSK.View.AAA"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Admin.Participations.Distanse.DistantionPage" SizeChanged="SizeChanged">
-
+             x:Class="VeloNSK.View.User.MyResultPatisipantPage" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -47,7 +46,7 @@
             <RowDefinition Height="70" x:Name="Main_RowDefinition_Ziro" />
             <RowDefinition Height="*" x:Name="Main_RowDefinition_One" />
             <RowDefinition Height="0" x:Name="Main_RowDefinition_Activity" />
-            <RowDefinition Height="30" x:Name="Main_RowDefinition_Three" />
+            <RowDefinition Height="40" x:Name="Main_RowDefinition_Three" />
         </Grid.RowDefinitions>
         <Image x:Name="image_fon" Grid.RowSpan="4" Aspect="Fill" />
         <!--Шапка-->
@@ -60,7 +59,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <BoxView Grid.ColumnSpan="3" x:Name="Hend_BoxView" BackgroundColor="#0079d8" />
+            <BoxView x:Name="Hend_BoxView" Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
             <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
             <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
             <Button x:Name="Back_Button" Text = "Back" Margin="10,10,0,10" Style="{StaticResource Head_Button}" />
@@ -72,38 +71,27 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
                 <RowDefinition Height="*" x:Name="YesRecords" />
                 <RowDefinition Height="0" x:Name="NoRecords" />
             </Grid.RowDefinitions>
-            <Label x:Name="Name_Lable" Text="Дистанции" FontAttributes="Bold" Style="{StaticResource Head_Lable}" TextColor="Black" />
-
+            <Label x:Name="Name_Lable" Text="Итоги соревнований" FontAttributes="Bold" Style="{StaticResource Head_Lable}" TextColor="Black" />
             <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="210" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Button Text="Манипулирование данными" Grid.Column="1" x:Name="btnAddRecord" Margin="0,0,0,15" />
-            </Grid>
-            <Grid Grid.Row="2">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="45" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Entry x:Name="PoiskName" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="По названию" Margin="10,0,10,0" />
-                    <Entry x:Name="PoiskDiscript" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="По описанию" Grid.Column="1" Margin="10,0,10,0" />
-                    <Entry x:Name="PoiskLengs" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="По длинне" Keyboard="Numeric" Grid.Column="2" Margin="10,0,10,0" />
-
+                    <Entry x:Name="PoiskNameDistans" FontAttributes="Bold" HorizontalTextAlignment="Center" Placeholder="по дистанции" Margin="10,0,10,0" />
+                    <Entry x:Name="ItogTime_Entry" Keyboard="Numeric" Grid.Column="1" Margin="10,0,10,0"  Placeholder="00:00:08:10">
+                        <Entry.Behaviors>
+                            <Behaviors:MaskedBehavior Mask="XX:XX:XX:XX" />
+                        </Entry.Behaviors>
+                    </Entry>
                     <dg:DataGrid x:Name="lstData" Grid.ColumnSpan="3" Grid.Row="1" SelectionEnabled="True"  ItemSelected="lstData_ItemSelected"
 						     RowHeight="70" HeaderHeight="50" BorderColor="#CCCCCC" HeaderBackground="#E0E6F8" ActiveRowColor="#8899AA">
                         <x:Arguments>
@@ -116,9 +104,9 @@
                             </OnIdiom>
                         </dg:DataGrid.HeaderFontSize>
                         <dg:DataGrid.Columns>
-                            <dg:DataGridColumn Title="Название" PropertyName="NameDistantion" Width="*" />
-                            <dg:DataGridColumn Title="Описание" PropertyName="Discriptions" Width="2*" />
-                            <dg:DataGridColumn Title="Длинна(м)" PropertyName="Lengs"  Width="120" />
+                            <dg:DataGridColumn Title="Название дистанции" PropertyName="NameDistantion" Width="2*" />
+                            <dg:DataGridColumn Title="Итоговое время" PropertyName="ResultTime" Width="*"  StringFormat="{}{0:HH:mm:ss}" />
+                            <dg:DataGridColumn Title="Занятое место" PropertyName="Mesto" Width="*" />
                         </dg:DataGrid.Columns>
                         <dg:DataGrid.RowsBackgroundColorPalette>
                             <dg:PaletteCollection>
@@ -129,7 +117,7 @@
                     </dg:DataGrid>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -139,7 +127,7 @@
                 <Label x:Name="NoRecord_Lable" Text="Записей с такими параметрами не найдено" TextColor="Black" FontSize="Subtitle" Style="{StaticResource Bottom_Lable}" />
             </Grid>
         </Grid>
-        <ActivityIndicator Grid.Row="2" x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
+        <ActivityIndicator Grid.Row="2"  x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
         <!--Подвал-->
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>

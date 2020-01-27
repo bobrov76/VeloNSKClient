@@ -180,7 +180,7 @@ namespace VeloNSK.View.Admin.ResultParticipation
                         SelectDate.Items.Add(item.NameDistantion);
                     }
 
-                    SelectDate.SelectedIndexChanged += async (s, e) =>
+                    SelectDate.SelectedIndexChanged += (s, e) =>
                     {
                         var picker_list = info.FirstOrDefault(x => x.NameDistantion == SelectDate.Items[SelectDate.SelectedIndex].ToString());
                         Time_Lable.Text = picker_list.Date.ToShortDateString();
@@ -212,7 +212,7 @@ namespace VeloNSK.View.Admin.ResultParticipation
         {
             if (ID_Partisipant != 0)
             {
-                await Positions(ID_Partisipant);
+                //await Positions(ID_Partisipant);
                 IEnumerable<ResultParticipant> resultParticipations = await resultParticipationServise.Get();
                 var info = resultParticipations.FirstOrDefault(x => x.IdResultParticipation == id);
                 ResultParticipant resultParticipant = new ResultParticipant
@@ -236,7 +236,7 @@ namespace VeloNSK.View.Admin.ResultParticipation
         {
             if (ID_Partisipant != 0)
             {
-                await Positions(ID_Partisipant);
+                //await Positions(ID_Partisipant);
                 ResultParticipant resultParticipant = new ResultParticipant
                 {
                     IdParticipation = ID_Partisipant,
@@ -254,37 +254,55 @@ namespace VeloNSK.View.Admin.ResultParticipation
             }
         }
 
-        public async Task Positions(int id)
+        //public async Task Positions(int id)
+        //{
+        //    IEnumerable<ResultParticipant> resultParticipants = await resultParticipationServise.Get();
+        //    IEnumerable<Participation> participations = await participationService.Get();
+        //    IEnumerable<Distantion> distantions = await distantionsServise.Get();
+        //    IEnumerable<Competentions> competentions = await competentionsServise.Get();
+        //    var info = from p in participations
+        //               join c in competentions on p.IdCompetentions equals c.IdCompetentions
+        //               join d in distantions on c.IdDistantion equals d.IdDistantion
+        //               join res in resultParticipants on p.IdParticipation equals res.IdParticipation
+        //               select new
+        //               {
+        //                   res.IdResultParticipation,
+        //                   p.IdParticipation,
+        //                   c.Date,
+        //                   d.IdDistantion,
+        //               };
+        //    // у нас есть IdParticipation
+        //    info = info.Where(p => p.IdParticipation == id).OrderBy(x => x.Date);
+        //    int i = 1;
+        //    foreach (var item in info)
+        //    {
+        //        //ResultParticipant resultParticipant = new ResultParticipant
+        //        //{
+        //        //    IdResultParticipation = item.IdResultParticipation,
+        //        //    IdParticipation = item.IdDistantion,
+        //        //    Mesto = i,
+        //        //    ResultTime = item.Date
+        //        //};
+        //        //  await resultParticipationServise.Update(resultParticipant);
+        //        i++;
+        //    }
+        //}
+
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
+        private new void SizeChanged(object sender, EventArgs e) //Стилизация
         {
-            IEnumerable<ResultParticipant> resultParticipants = await resultParticipationServise.Get();
-            IEnumerable<Participation> participations = await participationService.Get();
-            IEnumerable<Distantion> distantions = await distantionsServise.Get();
-            IEnumerable<Competentions> competentions = await competentionsServise.Get();
-            var info = from p in participations
-                       join c in competentions on p.IdCompetentions equals c.IdCompetentions
-                       join d in distantions on c.IdDistantion equals d.IdDistantion
-                       join res in resultParticipants on p.IdParticipation equals res.IdParticipation
-                       select new
-                       {
-                           res.IdResultParticipation,
-                           p.IdParticipation,
-                           c.Date,
-                           d.IdDistantion,
-                       };
-            // у нас есть IdParticipation
-            info = info.Where(p => p.IdParticipation == id).OrderBy(x => x.Date);
-            int i = 1;
-            foreach (var item in info)
+            if (size_form.GetHeightSize() > size_form.GetWidthSize())
             {
-                //ResultParticipant resultParticipant = new ResultParticipant
-                //{
-                //    IdResultParticipation = item.IdResultParticipation,
-                //    IdParticipation = item.IdDistantion,
-                //    Mesto = i,
-                //    ResultTime = item.Date
-                //};
-                //  await resultParticipationServise.Update(resultParticipant);
-                i++;
+                Login_ColumnDefinition_Ziro.Width = 10;
+                Login_ColumnDefinition_One.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_Two.Width = 10;
+            }
+            else
+            {
+                Login_ColumnDefinition_Ziro.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_One.Width = 560;
+                Login_ColumnDefinition_Two.Width = new GridLength(1, GridUnitType.Star);
             }
         }
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using VeloNSK.APIServise;
@@ -19,21 +20,17 @@ namespace VeloNSK.View.User
     {
         private ParticipationService participationService = new ParticipationService();
         private CompetentionsServise competentionsServise = new CompetentionsServise();
+        private GetClientServise getClientServise = new GetClientServise();
         private RegistrationUsersService registrationUsersService = new RegistrationUsersService();
-        private CategoriYarsServise categoriYarsServise = new CategoriYarsServise();
         private DistantionsServise distantionsServise = new DistantionsServise();
         private LoginUsersService loginUsersService = new LoginUsersService();
         private links picture_lincs = new links();
-        private Lincs server_lincs = new Lincs();
         private Animations animations = new Animations();
         private ConnectClass connectClass = new ConnectClass();
-        private Picker LoginPicer;
         private Picker CompetentionsPicer;
         private Picker SelectDate;
-        private string Date;
         private int IDUser;
         private int IDCompitention;
-        private DateTime dateTimeTest;
 
         public GegShempionatePage()
         {
@@ -46,7 +43,7 @@ namespace VeloNSK.View.User
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
             Users_Fon_Images.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "UserFon.png");
-
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
@@ -56,8 +53,7 @@ namespace VeloNSK.View.User
 
             Registrations_Button.Clicked += async (s, e) =>
             {
-                //if (id != 0) { await Update(id); }
-                //else { await Criate(); }
+                await Criate();
             };
         }
 
@@ -69,7 +65,8 @@ namespace VeloNSK.View.User
         private async Task GetUser()
         {
             InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
-            UserInfo_Lable.Text = loginUsers.Fam.Replace(" ", string.Empty) + " " + loginUsers.Name + " " + loginUsers.Patronimic;
+            UserInfo_Lable.Text = "Участник: " + loginUsers.Fam.Replace(" ", string.Empty) + " " + loginUsers.Name + " " + loginUsers.Patronimic;
+            IDUser = loginUsers.IdUsers;
         }
 
         private async Task Criate_CompetentionsPicer()
@@ -92,8 +89,6 @@ namespace VeloNSK.View.User
                              g.Key,
                              Count = g.Count()
                          };
-            // InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
-            //  info = info.Where(p => p.IdUsers == loginUsers.IdUsers);
             CompetentionsPicer = new Picker { Margin = new Thickness(10, -10, 10, 5) };
             foreach (var item in groups)
             {
@@ -111,24 +106,32 @@ namespace VeloNSK.View.User
             GridMain.Children.Add(CompetentionsPicer, 1, 2);
         }
 
-        private async Task Date_TestAsync()
+        private async Task<bool> Date_TestAsync()
         {
-            IEnumerable<Participation> participations = await participationService.Get();
             IEnumerable<Distantion> distantions = await distantionsServise.Get();
             IEnumerable<Competentions> competentions = await competentionsServise.Get();
-            var info = from p in participations
-                       join k in competentions on p.IdCompetentions equals k.IdCompetentions
+            var info = from k in competentions
                        join d in distantions on k.IdDistantion equals d.IdDistantion
+
                        select new
                        {
                            d.NameDistantion,
                            k.Date,
+                           k.IdCompetentions
                        };
+            DateTime selectd_date = Convert.ToDateTime(SelectDate.Items[SelectDate.SelectedIndex]);
+            var picker_list = info.FirstOrDefault(x => x.NameDistantion == CompetentionsPicer.Items[CompetentionsPicer.SelectedIndex] && x.Date == selectd_date);
 
-            var picker_list = info.FirstOrDefault(x => x.NameDistantion == CompetentionsPicer.Items[CompetentionsPicer.SelectedIndex].ToString());
-            if (picker_list.Date >= DateTime.Today.AddDays(1))
+            if (picker_list.Date <= DateTime.Today.AddDays(2))
             {
                 await DisplayAlert("Ошибка", "На эту дату запись уже недоступна", "Ок");
+                Registrations_Button.IsEnabled = false;
+                return false;
+            }
+            else
+            {
+                Registrations_Button.IsEnabled = true;
+                return true;
             }
         }
 
@@ -161,6 +164,7 @@ namespace VeloNSK.View.User
                     var picker_list = info.Where(
                         x => x.NameDistantion == CompetentionsPicer.Items[CompetentionsPicer.SelectedIndex] &&
                         x.Date == Convert.ToDateTime(SelectDate.Items[SelectDate.SelectedIndex]));
+                    await Date_TestAsync();
                     foreach (var item in picker_list)
                     {
                         IDCompitention = Convert.ToInt32(item.IdCompetentions);
@@ -175,32 +179,115 @@ namespace VeloNSK.View.User
             GridMain.Children.Add(SelectDate, 1, 3);
         }
 
-        //public async Task Criate()
-        //{
-        //    if (IDUser != 0 && IDCompitention != 0 && Autentification_CheckBox.IsChecked)
-        //    {
-        //        bool verifi = false;
-        //        if (Autentification_CheckBox.IsChecked)
-        //        {
-        //            verifi = true;
-        //        }
-        //        else { verifi = false; }
+        public async Task Criate()
+        {
+            InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
+            IEnumerable<InfoUser> infoUsers = await registrationUsersService.Get_user();
+            IEnumerable<Participation> participations = await participationService.Get();
+            IEnumerable<Distantion> distantions = await distantionsServise.Get();
+            IEnumerable<Competentions> competentions = await competentionsServise.Get();
+            var info = from p in participations
+                       join k in competentions on p.IdCompetentions equals k.IdCompetentions
+                       join d in distantions on k.IdDistantion equals d.IdDistantion
+                       join i in infoUsers on p.IdUser equals i.IdUsers
+                       select new
+                       {
+                           p.IdUser,
+                           i.Login,
+                           k.Date,
+                           p.IdStatusVerification,
+                           d.NameDistantion,
+                       };
+            DateTime selectd_date = Convert.ToDateTime(SelectDate.Items[SelectDate.SelectedIndex]);
+            var picker_list = info.FirstOrDefault(x => x.IdUser == loginUsers.IdUsers &&
+            x.NameDistantion == CompetentionsPicer.Items[CompetentionsPicer.SelectedIndex] && x.Date == selectd_date);
 
-        //        Participation participation = new Participation
-        //        {
-        //            IdCompetentions = IDCompitention,
-        //            IdUser = IDUser,
-        //            IdStatusVerification = verifi
-        //        };
+            if (picker_list == null)
+            {
+                if (await Date_TestAsync())
+                {
+                    if (IDUser != 0 && IDCompitention != 0)
+                    {
+                        Participation participation = new Participation
+                        {
+                            IdCompetentions = IDCompitention,
+                            IdUser = IDUser,
+                            IdStatusVerification = true
+                        };
 
-        //        await participationService.Add(participation);
+                        await participationService.Add(participation);
+                        await DownloadBage();
+                        await Navigation.PopModalAsync();
+                    }
+                    else
+                    {
+                        if (!await DisplayAlert("Ошибка", "Вы заполнили не все поля", "Заполнить", "Выйти")) { await Navigation.PopModalAsync(); }
+                    }
+                }
+            }
+            else
+            {
+                if (!await DisplayAlert("Предупреждение", "Вы уже зарегистрированы на эту дисциплину", "Зарегистрироваться на другую", "Выйти")) await Navigation.PopModalAsync();
+            }
+        }
 
-        //        if (!await DisplayAlert("", "Добавить еще одну запись", "Да", "Нет")) { await Navigation.PopModalAsync(); }
-        //    }
-        //    else
-        //    {
-        //        if (!await DisplayAlert("Ошибка", "Вы заполнили не все поля", "Заполнить", "Выйти")) { await Navigation.PopModalAsync(); }
-        //    }
-        //}
+        public async Task DownloadBage()
+        {
+            InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
+            IEnumerable<InfoUser> infoUsers = await registrationUsersService.Get_user();
+            IEnumerable<Participation> participations = await participationService.Get();
+            IEnumerable<Distantion> distantions = await distantionsServise.Get();
+            IEnumerable<Competentions> competentions = await competentionsServise.Get();
+            var info = from p in participations
+                       join k in competentions on p.IdCompetentions equals k.IdCompetentions
+                       join d in distantions on k.IdDistantion equals d.IdDistantion
+                       join i in infoUsers on p.IdUser equals i.IdUsers
+                       select new
+                       {
+                           p.IdUser,
+                           i.Login,
+                           k.Date,
+                           p.IdStatusVerification,
+                           d.NameDistantion,
+                           p.IdParticipation,
+                       };
+            DateTime selectd_date = Convert.ToDateTime(SelectDate.Items[SelectDate.SelectedIndex]);
+            var picker_list = info.FirstOrDefault(x => x.IdUser == loginUsers.IdUsers &&
+            x.NameDistantion == CompetentionsPicer.Items[CompetentionsPicer.SelectedIndex] && x.Date == selectd_date);
+            if (picker_list != null)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StringContent(IDUser.ToString()), "\"Id\"");
+                content.Add(new StringContent("criate_daidg"), "\"masage\"");
+                content.Add(new StringContent(picker_list.IdParticipation.ToString()), "\"Id_patisipant\"");
+                var httpClient = new HttpClient();
+                var servere_adres = "http://90.189.158.10/api/Doxs";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                var url = await httpResponseMasage.Content.ReadAsStringAsync();
+                await DisplayAlert("", "Вы успешно зарегистрированы", "Ok");
+                if (await DisplayAlert("", "Сохранить бэйдж", "Да", "Не сейчас"))
+                {
+                    var response = await httpClient.GetStreamAsync(url);
+                    await response.SaveToLocalFolderAsync("Бэйдж" + $"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}" + ".docx");
+                    await DisplayAlert("", "Бэйдж сохранен", "Ok");
+                }
+            }
+        }
+
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
+        private new void SizeChanged(object sender, EventArgs e)
+        {
+            if (size_form.GetWidthSize() >= 600)
+            {
+                Login_ColumnDefinition_Ziro.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_Two.Width = new GridLength(1, GridUnitType.Star);
+            }
+            if (size_form.GetWidthSize() <= 550)
+            {
+                Login_ColumnDefinition_Ziro.Width = 0;
+                Login_ColumnDefinition_Two.Width = 0;
+            }
+        }
     }
 }

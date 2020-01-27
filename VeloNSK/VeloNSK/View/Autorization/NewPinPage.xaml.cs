@@ -29,6 +29,7 @@ namespace VeloNSK.View.Autorization
 
             OctocatImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "replispasswd.png");
             CloseImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "close_circle_button.png");
+            DisplayAlert("Предупреждение", "Pin-code должен состоять из 4 цифр", "Ok");
             GetMasageButton.Clicked += (s, e) => SetMail();
         }
 
@@ -41,15 +42,31 @@ namespace VeloNSK.View.Autorization
         {
             if (Pin_Entry.Text.Length == 4)
             {
-                if (Pin_Entry.Text != null && Pin_Repid_Entry.Text != null && Pin_Entry.Text == Pin_Repid_Entry.Text)
+                if (int.TryParse(Pin_Entry.Text, out int num))
                 {
-                    App.Current.Properties["pin_code"] = Pin_Repid_Entry.Text;
-                    CloseAllPopup();
+                    if (int.TryParse(Pin_Repid_Entry.Text, out int nums))
+                    {
+                        if (Pin_Entry.Text != null && Pin_Repid_Entry.Text != null && Pin_Entry.Text == Pin_Repid_Entry.Text)
+                        {
+                            App.Current.Properties["pin_code"] = Pin_Repid_Entry.Text;
+                            CloseAllPopup();
+                        }
+                        else
+                        {
+                            animations.Animations_Entry(Pin_Repid_Entry);
+                            Pin_Repid_Entry.Text = "";
+                            Pin_Entry.Text = "";
+                        }
+                    }
+                    else
+                    {
+                        animations.Animations_Entry(Pin_Repid_Entry);
+                        Pin_Repid_Entry.Text = "";
+                    }
                 }
                 else
                 {
-                    animations.Animations_Entry(Pin_Repid_Entry);
-                    Pin_Repid_Entry.Text = "";
+                    animations.Animations_Entry(Pin_Entry);
                     Pin_Entry.Text = "";
                 }
             }

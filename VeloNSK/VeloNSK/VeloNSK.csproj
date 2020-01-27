@@ -11,13 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resours\Animations\12907-no-connection.json" />
     <None Remove="Resours\anvisible_password.png" />
     <None Remove="Resours\Circl_PIN_Color.png" />
     <None Remove="Resours\close_circle_button.png" />
-    <None Remove="Resours\connect.gif" />
     <None Remove="Resours\Del_text.png" />
-    <None Remove="Resours\finger.png" />
+    <None Remove="Resours\ErrirConnect.png" />
     <None Remove="Resours\fon.jpg" />
     <None Remove="Resours\logo.png" />
     <None Remove="Resours\masage_picture.png" />
@@ -25,7 +23,6 @@
     <None Remove="Resours\redact_user.jpg" />
     <None Remove="Resours\replispasswd.png" />
     <None Remove="Resours\UserFon.png" />
-    <None Remove="Resours\user_fon.jpg" />
     <None Remove="Resours\visible_passwprd.png" />
   </ItemGroup>
 
@@ -53,12 +50,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resours\Animations\12907-no-connection.json" />
     <EmbeddedResource Include="Resours\anvisible_password.png" />
     <EmbeddedResource Include="Resours\Circl_PIN_Color.png" />
-    <EmbeddedResource Include="Resours\connect.gif" />
     <EmbeddedResource Include="Resours\Del_text.png" />
-    <EmbeddedResource Include="Resours\finger.png" />
+    <EmbeddedResource Include="Resours\ErrirConnect.png" />
     <EmbeddedResource Include="Resours\fon.jpg" />
     <EmbeddedResource Include="Resours\logo.png" />
     <EmbeddedResource Include="Resours\masage_picture.png" />
@@ -66,7 +61,6 @@
     <EmbeddedResource Include="Resours\redact_user.jpg" />
     <EmbeddedResource Include="Resours\replispasswd.png" />
     <EmbeddedResource Include="Resours\UserFon.png" />
-    <EmbeddedResource Include="Resours\user_fon.jpg" />
     <EmbeddedResource Include="Resours\visible_passwprd.png" />
   </ItemGroup>
 
@@ -75,15 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AddUserPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Page12.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="View\AAA\Page1.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="View\Admin\AdminPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -156,9 +141,6 @@
     <EmbeddedResource Update="View\Info\InfoMapsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\Info\InfoMaraphonPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="View\Info\InfoMemuPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -175,6 +157,12 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\User\GegShempionatePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="View\User\MyPatisipantPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="View\User\MyResultPatisipantPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="View\User\UserPage.xaml">

@@ -27,7 +27,7 @@
                 <!--Left, Top, Right, Bottom-->
             </Style>
             <Style x:Key="Button_Keyboard" TargetType="Button">
-                <Setter Property="Margin" Value="5,5,5,5" />
+                <Setter Property="Margin" Value="3" />
             </Style>
             <Style x:Key="Main_Lable" TargetType="Label">
                 <Setter Property="HorizontalTextAlignment" Value="End" />
@@ -75,7 +75,7 @@
                         <RowDefinition Height="40" />
                         <RowDefinition Height="30" x:Name="PIN_ColumnDefinition" />
                     </Grid.RowDefinitions>
-                    <Label Grid.ColumnSpan="6" x:Name="PIN_Lable" Text="Введите PIN" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Style="{StaticResource Main_Lable}" />
+                    <Label Grid.ColumnSpan="6" x:Name="PIN_Lable" Text="Введите PIN" FontSize="Subtitle" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Style="{StaticResource Main_Lable}" />
                     <Image Grid.Row="1" Grid.Column="1" x:Name="One_Image" Aspect="AspectFit" HorizontalOptions="End" />
                     <Image Grid.Row="1" Grid.Column="2" x:Name="Two_Image" Aspect="AspectFit" HorizontalOptions="Center" />
                     <Image Grid.Row="1" Grid.Column="3" x:Name="Three_Image" Aspect="AspectFit" HorizontalOptions="Center" />
@@ -91,10 +91,10 @@
                         <ColumnDefinition Width="110" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="100" />
-                        <RowDefinition Height="100" />
-                        <RowDefinition Height="100" />
-                        <RowDefinition Height="100" />
+                        <RowDefinition Height="90" />
+                        <RowDefinition Height="90" />
+                        <RowDefinition Height="90" />
+                        <RowDefinition Height="90" />
                     </Grid.RowDefinitions>
 
                     <Button x:Name="Button1" Text="1" Style="{StaticResource Button_Keyboard }" />

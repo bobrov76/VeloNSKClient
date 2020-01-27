@@ -45,7 +45,7 @@
             <RowDefinition Height="*" x:Name="Main_RowDefinition_One" />
             <RowDefinition Height="6*" x:Name="Main_RowDefinition_Two" />
             <RowDefinition Height="*" x:Name="Main_RowDefinition_Three" />
-            <RowDefinition Height="40" x:Name="Main_RowDefinition_Fore" />
+            <RowDefinition Height="30" x:Name="Main_RowDefinition_Fore" />
         </Grid.RowDefinitions>
         <Image x:Name="image_fon" Grid.RowSpan="5" Aspect="Fill" />
         <!--Шапка-->

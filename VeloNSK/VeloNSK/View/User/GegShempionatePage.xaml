@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.User.GegShempionatePage">
+             x:Class="VeloNSK.View.User.GegShempionatePage" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -47,7 +47,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Ziro" />
-                <ColumnDefinition Width="500" />
+                <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="*" x:Name="Login_ColumnDefinition_Two" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -55,6 +55,7 @@
                 <RowDefinition Height="640" x:Name="Login_RowDefinition_One" />
                 <RowDefinition Height="*" x:Name="Login_RowDefinition_Two" />
             </Grid.RowDefinitions>
+            <Image x:Name="image_fon" Grid.RowSpan="3" Grid.ColumnSpan="3" Aspect="Fill" />
             <Grid Grid.Row="1" Grid.Column="1" x:Name="GridMain">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" />
@@ -73,8 +74,8 @@
                 <Label Grid.ColumnSpan="2" x:Name="Head_Lable" Text="Запись на соревнование" FontSize="Medium" Style="{StaticResource Head_Lable}" />
 
                 <!--Блок-->
-                <Label Grid.Row ="1" Text="Участник: " Style="{StaticResource Main_Lable}" />
-                <Label x:Name="UserInfo_Lable" Grid.Row ="1" Grid.Column="1" VerticalTextAlignment="Start" VerticalOptions="Start" Style="{StaticResource Main_Lable}" />
+                <Label x:Name="UserInfo_Lable" Grid.Row ="1" Grid.ColumnSpan="2" HorizontalOptions="Start"
+                       HorizontalTextAlignment="Start" VerticalTextAlignment="Start" VerticalOptions="Start" Text="Участник: " Margin="100,0,0,0" Style="{StaticResource Main_Lable}" />
 
                 <Label Grid.Row ="2" Text="Компетенция: " Style="{StaticResource Main_Lable}" />
                 <Label Grid.Row ="3" Text="Выбор даты: " Style="{StaticResource Main_Lable}" />

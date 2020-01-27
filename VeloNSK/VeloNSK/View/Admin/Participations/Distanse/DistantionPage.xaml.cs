@@ -48,16 +48,39 @@ namespace VeloNSK.View.Admin.Participations.Distanse
             Back_Button.Clicked += async (s, e) =>
             {
                 animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                await Task.Delay(300);
                 await Navigation.PopModalAsync();//Переход назад
             };
 
             btnAddRecord.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(btnAddRecord);
-                await Task.Delay(1000);
-                int nul = 0;
-                await Navigation.PushModalAsync(new AddDistantionsPage(nul), animate);
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Добавить данные", "Импортировать данные", "Экспортировать данные");
+                switch (res)
+                {
+                    case "Добавить данные":
+
+                        int nul = 0;
+                        await Navigation.PushModalAsync(new AddDistantionsPage(nul), animate);
+                        break;
+
+                    case "Импортировать данные":
+                        await Import();
+                        break;
+
+                    case "Экспортировать данные":
+                        string res_export = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                        switch (res_export)
+                        {
+                            case "Скачать шаблон":
+                                await DownloadSimple();
+                                break;
+
+                            case "Экспортировать":
+                                await Export();
+                                break;
+                        }
+                        break;
+                }
             };
 
             PoiskName.TextChanged += async (s, e) =>
@@ -83,24 +106,6 @@ namespace VeloNSK.View.Admin.Participations.Distanse
                     await Poisk("PoiskLengs");
                 }
                 catch { }
-            };
-            btnImport.Clicked += async (s, e) =>
-            {
-                await Import();
-            };
-            btnAddExport.Clicked += async (s, e) =>
-            {
-                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
-                switch (res)
-                {
-                    case "Скачать шаблон":
-                        await DownloadSimple();
-                        break;
-
-                    case "Экспортировать":
-                        await Export();
-                        break;
-                }
             };
         }
 

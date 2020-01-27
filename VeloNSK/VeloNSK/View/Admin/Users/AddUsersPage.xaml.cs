@@ -52,7 +52,7 @@ namespace VeloNSK.View.Admin.Users
             get_users(id);
             GetPicerAsync();
 
-            if (id == 0 && status_form == "MainPage")
+            if (id == 0 && status_form == "MainPage" || status_form == "Redacting")
             {
                 Rol_Picker.IsEnabled = false;
                 RolUser = "User";
@@ -61,8 +61,10 @@ namespace VeloNSK.View.Admin.Users
             Pol_Picer.SelectedIndex = 1;
             Rol_Picker.SelectedIndex = 1;
             pol = true;
-            Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon());
+
             User_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "nophotouser.png");
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
+            //Users_Fon_Images.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "UserFon.png");
             password_status_image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "anvisible_password.png");//Инициализация статуса пароля
             password_status_image.Clicked += (s, e) => { Password_IsVisible(); };
 
@@ -91,14 +93,21 @@ namespace VeloNSK.View.Admin.Users
 
             Save_Picture_Button.Clicked += async (s, e) =>
             {
-                if (await DisplayAlert("", "Сделать снимок ?", "Да", "Нет")) await takePhotoAsync();
-                else await getPhotoingaleriAsync();
+                if (Device.RuntimePlatform == Device.Android)
+                {
+                    await getPhotoingaleriAsync();
+                }
+                else
+                {
+                    if (await DisplayAlert("", "Сделать снимок ?", "Да", "Нет")) await takePhotoAsync();
+                    else await getPhotoingaleriAsync();
+                }
             };
 
             Back_Button.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Back_Button);
-                await Task.Delay(1000);
+                //animations.Animations_Button(Back_Button);
+                //await Task.Delay(1000);
                 await Navigation.PopModalAsync();//Переход назад
             };
             Generate_Password_CheckBox.CheckedChanged += (s, e) =>
@@ -217,15 +226,27 @@ namespace VeloNSK.View.Admin.Users
 
             if (id != 0)
             {
-                Login_Entry.Text = infoUsers.Login.ToString();
+                Head_Lable.Text = "Редактирование профиля";
+                Grid_One.Height = 0;
+                Grid_Two.Height = 0;
+                Grid_Fore.Height = 0;
+                Time_Lable_Picer.IsVisible = true;
+                Rol_Picker.IsVisible = false;
+                if (infoUsers.Rol == "Admin") { Time_Lable_Picer.Text = "Администратор"; }
+                else { Time_Lable_Picer.Text = "Пользователь"; }
+                pol = infoUsers.Isman;
+                user_hals = infoUsers.IdHelth;
+                Login_Entry.IsVisible = false;
+                Login_Lable_Entry.IsVisible = true;
+                Login_Lable_Entry.Text = infoUsers.Login.ToString();
+                Email_Entry.IsVisible = false;
+                Email_Lable_Entry.IsVisible = true;
+                Email_Lable_Entry.Text = infoUsers.Email;
                 RolUser = infoUsers.Rol;
                 Name_Entry.Text = infoUsers.Name;
                 Fam_Entry.Text = infoUsers.Fam;
                 Patronymic_Entry.Text = infoUsers.Patronimic;
                 Yars_Entry.Text = infoUsers.Years.ToString();
-                Email_Entry.Text = infoUsers.Email;
-                Login_Entry.IsEnabled = false;
-                Email_Entry.IsEnabled = false;
                 User_Image.Source = new UriImageSource
                 {
                     CachingEnabled = false,
@@ -245,6 +266,8 @@ namespace VeloNSK.View.Admin.Users
             }
         }
 
+        private bool photo_status = false;
+
         // выбор фото
         private async Task getPhotoingaleriAsync()
         {
@@ -258,6 +281,7 @@ namespace VeloNSK.View.Admin.Users
                         return;
                     }
                     User_Image.Source = ImageSource.FromStream(() => { return _mediaFile.GetStream(); });
+                    photo_status = true;
                 }
             }
             catch (Exception)
@@ -276,43 +300,36 @@ namespace VeloNSK.View.Admin.Users
                 {
                     _mediaFile = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions
                     {
-                        // SaveToAlbum = true,
-                        Directory = "Sample",
+                        SaveToAlbum = true,
+                        //Directory = "Sample",
                         Name = $"{DateTime.Now.ToString("ddMMyyyyhhmmss")}.jpg"
                     });
                     if (_mediaFile == null)
                         return;
                     User_Image.Source = ImageSource.FromStream(() => { return _mediaFile.GetStream(); });
+                    photo_status = true;
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch { await DisplayAlert("Предупреждение", "К сожалению в данный момент сьемка невозможна", "Ok"); }
         }
 
         public async Task update_userAsync(int id)
         {
             try
             {
-                if (Password_Entry.Text != null && RolUser != null && Name_Entry.Text != null &&
-                       Fam_Entry.Text != null && Patronymic_Entry.Text != null && Yars_Entry.Text != null &&
-                       Email_Entry.Text != null)
+                if (RolUser != null && Name_Entry.Text != null && Fam_Entry.Text != null && Patronymic_Entry.Text != null && Yars_Entry.Text != null)
+
                 {
-                    if (_mediaFile.GetStream() != null)
+                    if (Convert.ToInt32(Yars_Entry.Text) >= 14)
                     {
-                        if (!validation.Vadidation(Email_Entry.Text, @"(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)"))
+                        Login_RowDefinition_One.Height = 0;
+                        Main_RowDefinition_Activity.Height = 1000;
+                        activityIndicator.IsRunning = true;
+                        InfoUser infoUsers = await registrationUsersService.Get_user_id(id);
+                        InfoUser infoUser;
+                        if (photo_status)
                         {
-                            Error_Email_RowDefinition.Height = 40;
-                            Error_Email_Lable.Text = "E-mail не соответствует требованию";
-                        }
-                        else
-                        {
-                            Error_Email_RowDefinition.Height = 0;
-                            Error_Email_Lable.Text = "";
-
                             string folder_name = Login_Entry.Text.Replace("+", string.Empty).Replace(" ", string.Empty).Replace("-", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty);
-
                             var content = new MultipartFormDataContent();
                             content.Add(new StreamContent(_mediaFile.GetStream()), "\"files\"", $"\"{_mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf(@"\")))}\"");
                             content.Add(new StringContent(folder_name), "\"Id\"");
@@ -320,32 +337,50 @@ namespace VeloNSK.View.Admin.Users
                             var servere_adres = "http://90.189.158.10/api/Folder/";
                             var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
                             var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
-                            string Hach = hash.GetHash(Password_Entry.Text);
-                            InfoUser infoUser = new InfoUser
+                            infoUser = new InfoUser
                             {
-                                Login = Login_Entry.Text,
-                                Password = Hach,
+                                IdUsers = id,
+                                Password = infoUsers.Password,
+                                Email = Email_Lable_Entry.Text,
+                                Login = Login_Lable_Entry.Text,
                                 Rol = RolUser,
                                 Name = Name_Entry.Text,
                                 Fam = Fam_Entry.Text,
                                 Patronimic = Patronymic_Entry.Text,
                                 Years = Convert.ToInt16(Yars_Entry.Text),
-                                Email = Email_Entry.Text,
                                 Isman = pol,
                                 IdHelth = user_hals,
                                 Logo = url_image
                             };
-                            using (var client = getClientServise.GetClient())
-                            {
-                                var response = await client.PutAsync("http://90.189.158.10/api/UserInfoes/" + id.ToString(),
-                                        new StringContent(JsonConvert.SerializeObject(infoUser), Encoding.UTF8, "application/json"));
-                                var masage = JsonConvert.DeserializeObject<InfoUser>(await response.Content.ReadAsStringAsync());
-                            }
                         }
+                        else
+                        {
+                            infoUser = new InfoUser
+                            {
+                                IdUsers = id,
+                                Password = infoUsers.Password,
+                                Email = Email_Lable_Entry.Text,
+                                Login = Login_Lable_Entry.Text,
+                                Rol = RolUser,
+                                Name = Name_Entry.Text,
+                                Fam = Fam_Entry.Text,
+                                Patronimic = Patronymic_Entry.Text,
+                                Years = Convert.ToInt16(Yars_Entry.Text),
+                                Isman = pol,
+                                IdHelth = user_hals,
+                                Logo = infoUsers.Logo
+                            };
+                        }
+                        await registrationUsersService.Update(infoUser);
+                        await Task.Delay(1000);
+                        Login_RowDefinition_One.Height = 1000;
+                        Main_RowDefinition_Activity.Height = 0;
+                        activityIndicator.IsRunning = false;
+                        await Navigation.PopModalAsync();
                     }
                     else
                     {
-                        await DisplayAlert("Предупреждение", "Пожалуйста выберите изображение", "ОK");
+                        await DisplayAlert("Предупреждение", "Минимальный возраст для регистации 14 лет", "ОK");
                     }
                 }
                 else
@@ -353,123 +388,144 @@ namespace VeloNSK.View.Admin.Users
                     if (!await DisplayAlert("Ошибка", "Вы заполнили не все поля", "Заполнить", "Выйти")) { await Navigation.PopModalAsync(); }
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch { }
         }
 
         public async Task reg_userAsync(string status_form)
         {
             try
             {
-                if (Login_Entry.Text != null && Password_Entry.Text != null && RolUser != null && Name_Entry.Text != null &&
+                if (Password_Entry.Text == Password_Replay_Entry.Text)
+                {
+                    if (Login_Entry.Text != null && Password_Entry.Text != null && RolUser != null && Name_Entry.Text != null &&
                                    Fam_Entry.Text != null && Patronymic_Entry.Text != null && Yars_Entry.Text != null &&
                                    Email_Entry.Text != null)
-                {
-                    if (_mediaFile != null)
                     {
-                        if (!validation.Vadidation(Email_Entry.Text, @"(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)"))
+                        if (Convert.ToInt32(Yars_Entry.Text) >= 14)
                         {
-                            Error_Email_RowDefinition.Height = 40;
-                            Error_Email_Lable.Text = "E-mail не соответствует требованию";
+                            if (_mediaFile != null)
+                            {
+                                if (!validation.Vadidation(Email_Entry.Text, @"(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)"))
+                                {
+                                    Error_Email_RowDefinition.Height = 40;
+                                    Error_Email_Lable.Text = "E-mail не соответствует требованию";
+                                }
+                                else
+                                {
+                                    Login_RowDefinition_One.Height = 0;
+                                    Main_RowDefinition_Activity.Height = 1000;
+                                    activityIndicator.IsRunning = true;
+                                    Error_Email_RowDefinition.Height = 0;
+                                    Error_Email_Lable.Text = "";
+
+                                    string folder_name = Login_Entry.Text.Replace("+", string.Empty).Replace(" ", string.Empty).Replace("-", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty);
+
+                                    using (var client = getClientServise.GetClient())
+                                    {
+                                        string result = await client.GetStringAsync("http://90.189.158.10/api/Folder/" + folder_name);
+                                        string masage = result;
+                                    }
+
+                                    var content = new MultipartFormDataContent();
+                                    string patchs = "";
+                                    if (Device.RuntimePlatform == Device.Android) { patchs = _mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf("/"))); }
+                                    else if (Device.RuntimePlatform == Device.UWP) { patchs = _mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf(@"\"))); }
+                                    content.Add(new StreamContent(_mediaFile.GetStream()), "\"files\"", $"\"{patchs}\"");
+                                    content.Add(new StringContent(folder_name), "\"Id\"");
+                                    var httpClient = new HttpClient();
+
+                                    var servere_adres = "http://90.189.158.10/api/Folder/";
+                                    var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                                    var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
+                                    string Hach = hash.GetHash(Password_Entry.Text);
+                                    InfoUser infoUser = new InfoUser
+                                    {
+                                        Login = Login_Entry.Text,
+                                        Password = Hach,
+                                        Rol = RolUser,
+                                        Name = Name_Entry.Text,
+                                        Fam = Fam_Entry.Text,
+                                        Patronimic = Patronymic_Entry.Text,
+                                        Years = Convert.ToInt16(Yars_Entry.Text),
+                                        Email = Email_Entry.Text,
+                                        Isman = pol,
+                                        IdHelth = user_hals,
+                                        Logo = url_image
+                                    };
+                                    using (var client = getClientServise.GetClient())
+                                    {
+                                        var response = client.PostAsJsonAsync("http://90.189.158.10/api/UserInfoes/", infoUser).Result;
+                                        var masage = JsonConvert.DeserializeObject<InfoUser>(await response.Content.ReadAsStringAsync());
+                                        if (status_form == "MainPage")
+                                        {
+                                            await Task.Delay(1000);
+                                            Login_RowDefinition_One.Height = 1000;
+                                            Main_RowDefinition_Activity.Height = 0;
+                                            activityIndicator.IsRunning = false;
+                                            await DisplayAlert("Успешная регистрация", "Вы успешно зарегистрованы", "Ok");
+                                            await Navigation.PushModalAsync(new LoginPage());
+                                        }
+                                        if (status_form == "Admin")
+                                        {
+                                            await Task.Delay(1000);
+                                            Login_RowDefinition_One.Height = 1000;
+                                            Main_RowDefinition_Activity.Height = 0;
+                                            activityIndicator.IsRunning = false;
+                                            if (await DisplayAlert("", "Зарегистрировать еще одного пользователя?", "Да", "Нет"))
+                                            {
+                                                Login_Entry.Text = null;
+                                                Password_Entry.Text = null;
+                                                RolUser = null;
+                                                Name_Entry.Text = null;
+                                                Fam_Entry.Text = null;
+                                                Patronymic_Entry.Text = null;
+                                                Yars_Entry.Text = null;
+                                                Email_Entry.Text = null;
+                                                url_image = null;
+                                            }
+                                            else { await Navigation.PopModalAsync(); }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                await DisplayAlert("Предупреждение", "Пожалуйста выберите изображение", "ОK");
+                            }
                         }
                         else
                         {
-                            Error_Email_RowDefinition.Height = 0;
-                            Error_Email_Lable.Text = "";
-
-                            string folder_name = Login_Entry.Text.Replace("+", string.Empty).Replace(" ", string.Empty).Replace("-", string.Empty).Replace("(", string.Empty).Replace(")", string.Empty);
-
-                            using (var client = getClientServise.GetClient())
-                            {
-                                string result = await client.GetStringAsync("http://90.189.158.10/api/Folder/" + folder_name);
-                                string masage = result;
-                            }
-
-                            var content = new MultipartFormDataContent();
-                            string patchs = "";
-                            if (Device.RuntimePlatform == Device.Android) { patchs = _mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf("/"))); }
-                            else if (Device.RuntimePlatform == Device.UWP) { patchs = _mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf(@"\"))); }
-                            content.Add(new StreamContent(_mediaFile.GetStream()), "\"files\"", $"\"{patchs}\"");
-                            content.Add(new StringContent(folder_name), "\"Id\"");
-                            var httpClient = new HttpClient();
-
-                            var servere_adres = "http://90.189.158.10/api/Folder/";
-                            var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
-                            var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
-                            string Hach = hash.GetHash(Password_Entry.Text);
-                            InfoUser infoUser = new InfoUser
-                            {
-                                Login = Login_Entry.Text,
-                                Password = Hach,
-                                Rol = RolUser,
-                                Name = Name_Entry.Text,
-                                Fam = Fam_Entry.Text,
-                                Patronimic = Patronymic_Entry.Text,
-                                Years = Convert.ToInt16(Yars_Entry.Text),
-                                Email = Email_Entry.Text,
-                                Isman = pol,
-                                IdHelth = user_hals,
-                                Logo = url_image
-                            };
-                            using (var client = getClientServise.GetClient())
-                            {
-                                var response = client.PostAsJsonAsync("http://90.189.158.10/api/UserInfoes/", infoUser).Result;
-                                var masage = JsonConvert.DeserializeObject<InfoUser>(await response.Content.ReadAsStringAsync());
-                                if (status_form == "MainPage")
-                                {
-                                    await DisplayAlert("Успешная регистрация", "Вы успешно зарегистрованы", "Ok");
-                                    await Navigation.PushModalAsync(new LoginPage());
-                                }
-                                if (status_form == "Admin")
-                                {
-                                    if (await DisplayAlert("", "Зарегистрировать еще одного пользователя?", "Да", "Нет"))
-                                    {
-                                        Login_Entry.Text = null;
-                                        Password_Entry.Text = null;
-                                        RolUser = null;
-                                        Name_Entry.Text = null;
-                                        Fam_Entry.Text = null;
-                                        Patronymic_Entry.Text = null;
-                                        Yars_Entry.Text = null;
-                                        Email_Entry.Text = null;
-                                        url_image = null;
-                                    }
-                                    else { await Navigation.PopModalAsync(); }
-                                }
-                            }
+                            await DisplayAlert("Предупреждение", "Минимальный возраст для регистации 14 лет", "ОK");
                         }
                     }
                     else
                     {
-                        await DisplayAlert("Предупреждение", "Пожалуйста выберите изображение", "ОK");
+                        if (!await DisplayAlert("Ошибка", "Вы заполнили не все поля", "Заполнить", "Выйти")) { await Navigation.PopModalAsync(); }
                     }
                 }
                 else
                 {
-                    if (!await DisplayAlert("Ошибка", "Вы заполнили не все поля", "Заполнить", "Выйти")) { await Navigation.PopModalAsync(); }
+                    await DisplayAlert("Предупреждение", "Пароли не совпадают", "ОK");
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch { }
         }
 
         private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
 
-        private new void SizeChanged(object sender, EventArgs e)
+        private new void SizeChanged(object sender, EventArgs e) //Стилизация
         {
-            if (size_form.GetWidthSize() >= 600)
+            if (size_form.GetHeightSize() > size_form.GetWidthSize())
+            {
+                Login_ColumnDefinition_Ziro.Width = 5;
+                Login_ColumnDefinition_One.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_Two.Width = 5;
+            }
+            else
             {
                 Login_ColumnDefinition_Ziro.Width = new GridLength(1, GridUnitType.Star);
+                Login_ColumnDefinition_One.Width = 600;
                 Login_ColumnDefinition_Two.Width = new GridLength(1, GridUnitType.Star);
-            }
-            if (size_form.GetWidthSize() <= 550)
-            {
-                Login_ColumnDefinition_Ziro.Width = 0;
-                Login_ColumnDefinition_Two.Width = 0;
             }
         }
     }

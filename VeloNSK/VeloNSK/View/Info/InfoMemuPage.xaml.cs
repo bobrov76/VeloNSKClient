@@ -24,41 +24,41 @@ namespace VeloNSK
 
         public InfoMemuPage()
         {
-            InitializeComponent();
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
+            InitializeComponent();
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
             Head_Button.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Head_Button);
-                await Task.Delay(1000);
+                //animations.Animations_Button(Head_Button);
+                //await Task.Delay(1000);
                 await Navigation.PopModalAsync();//Переход назад
             };
             Block_Button_One.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_One);
-                await Task.Delay(1000);
+                //animations.Animations_Button(Block_Button_One);
+                //await Task.Delay(1000);
                 await Navigation.PushModalAsync(new PhotoGaleri());
             };
             Block_Button_Two.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_Two);
-                await Task.Delay(1000);
+                //animations.Animations_Button(Block_Button_Two);
+                //await Task.Delay(1000);
                 await Navigation.PushModalAsync(new InfoUsersPage());
             };
             Block_Button_Three.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_Three);
-                await Task.Delay(1000);
+                //animations.Animations_Button(Block_Button_Three);
+                //await Task.Delay(1000);
                 await Navigation.PushModalAsync(new InfoMapsPage());
             };
             Block_Button_Fore.Clicked += async (s, e) =>
              {
-                 animations.Animations_Button(Block_Button_Fore);
-                 await Task.Delay(1000);
+                 //animations.Animations_Button(Block_Button_Fore);
+                 //await Task.Delay(1000);
                  await Navigation.PushModalAsync(new InfoContactsPage());
              };
         }

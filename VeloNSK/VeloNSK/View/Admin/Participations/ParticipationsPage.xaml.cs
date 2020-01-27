@@ -54,10 +54,34 @@ namespace VeloNSK.View.Admin.Participations
 
             btnAddRecord.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(btnAddRecord);
-                await Task.Delay(300);
-                int nul = 0;
-                await Navigation.PushModalAsync(new AddPaticipationsPage(nul), animate);
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Добавить данные", "Импортировать данные", "Экспортировать данные");
+                switch (res)
+                {
+                    case "Добавить данные":
+                        animations.Animations_Button(btnAddRecord);
+                        await Task.Delay(300);
+                        int nul = 0;
+                        await Navigation.PushModalAsync(new AddPaticipationsPage(nul), animate);
+                        break;
+
+                    case "Импортировать данные":
+                        await Import();
+                        break;
+
+                    case "Экспортировать данные":
+                        string res_export = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
+                        switch (res_export)
+                        {
+                            case "Скачать шаблон":
+                                await DownloadSimple();
+                                break;
+
+                            case "Экспортировать":
+                                await Export();
+                                break;
+                        }
+                        break;
+                }
             };
 
             PoiskLogin.TextChanged += async (s, e) =>
@@ -89,26 +113,6 @@ namespace VeloNSK.View.Admin.Participations
                 else
                 {
                     showEmployeeAsync(false);
-                }
-            };
-
-            btnImport.Clicked += async (s, e) =>
-            {
-                await Import();
-            };
-
-            btnAddExport.Clicked += async (s, e) =>
-            {
-                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Скачать шаблон", "Экспортировать");
-                switch (res)
-                {
-                    case "Скачать шаблон":
-                        await DownloadSimple();
-                        break;
-
-                    case "Экспортировать":
-                        await Export();
-                        break;
                 }
             };
         }
@@ -308,8 +312,8 @@ namespace VeloNSK.View.Admin.Participations
         private async Task DownloadSimple()
         {
             HttpClient client = getClientServise.GetClient();
-            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplatePartisipation.xlsx");
-            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/PartisipantExportSimple.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для экспорта информации о соревновании" + $"{DateTime.Now.ToString("ddMMyyyyhhmmss")}" + ".xlsx");
             await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
         }
 
@@ -333,9 +337,40 @@ namespace VeloNSK.View.Admin.Participations
                 Main_RowDefinition_Activity.Height = 0;
                 activityIndicator.IsRunning = false;
                 await DisplayAlert("", "Импорт успешно выполнен", "Ok");
-                await DisplayAlert("", filePath, "Ok");
             }
             catch { }
+        }
+
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
+        private new void SizeChanged(object sender, EventArgs e)
+        {
+            double width = size_form.GetWidthSize();
+            double height = size_form.GetHeightSize();
+            if (width > height)
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 0;
+                    Main_RowDefinition_Three.Height = 0;
+                    Head_Image.IsVisible = false;
+                    Head_Lable.IsVisible = false;
+                    Back_Button.IsVisible = false;
+                    Hend_BoxView.IsVisible = false;
+                }
+            }
+            else
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 70;
+                    Main_RowDefinition_Three.Height = 40;
+                    Head_Image.IsVisible = true;
+                    Head_Lable.IsVisible = true;
+                    Back_Button.IsVisible = true;
+                    Hend_BoxView.IsVisible = true;
+                }
+            }
         }
     }
 }

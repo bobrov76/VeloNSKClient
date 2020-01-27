@@ -30,6 +30,7 @@ namespace VeloNSK
         private Animations animations = new Animations();
         private bool animate;
         private HttpClient _client;
+        private bool alive = true;
 
         public MainPage()
         {
@@ -52,42 +53,49 @@ namespace VeloNSK
                 App.Current.Properties.Add("pin_code", "");
             }
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
-            CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
+            CrossConnectivity.Current.ConnectivityChanged += async (s, e) =>
+            {
+                if (!connectClass.CheckConnection()) await Connect_ErrorAsync();
+                else GetImageListAsync();
+            };
 
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
 
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
 
             _client = new HttpClient();
+            //Device.StartTimer(TimeSpan.FromSeconds(20), OnTimerTick);
             Slider_Left_Bt.Clicked += (s, e) => Slider_Left_Function();
             Slider_Right_Bt.Clicked += (s, e) => Slider_Right_Function();
             Head_Button.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Head_Button);
-                await Task.Delay(700);
+                alive = false;
                 await LoginAsync();
             };
             Block_Button_One.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_One);
-                await Task.Delay(700);
+                alive = false;
                 await Navigation.PushModalAsync(new AddUsersPage(0, "MainPage"), animate);
             };
             Block_Button_Tho.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_Tho);
-                await Task.Delay(300);
+                alive = false;
                 await LoginAsync();
             };
             Block_Button_Three.Clicked += async (s, e) =>
             {
-                animations.Animations_Button(Block_Button_Three);
-                await Task.Delay(300);
+                alive = false;
                 await Navigation.PushModalAsync(new InfoMemuPage(), animate);
             };
 
             GetImageListAsync();
         }
+
+        //private bool OnTimerTick()
+        //{
+        //    Slider_Right_Function();
+        //    return alive;
+        //}
 
         private async void GetImageListAsync()
         {
@@ -133,11 +141,6 @@ namespace VeloNSK
 
         private void img()
         {
-            //uint duration = 10 * 60 * 1000;
-
-            //Slid0.RotateTo(307 * 360, duration);
-            //Slid0.RotateXTo(251 * 360, duration);
-            //Slid0.RotateYTo(199 * 360, duration);
             animated();
             Slid0.Source = new UriImageSource
             {
@@ -182,16 +185,13 @@ namespace VeloNSK
             };
         }
 
-        private async void Flip(Image image)
+        private async void Flip(Image imageOne)
         {
-            uint timeout = 2000;
-
-            //image.RotationY = -270;
-            await image.RotateYTo(-90, timeout, Easing.SpringIn);
-            image.IsVisible = false;
-            image.IsVisible = true;
-            await image.RotateYTo(-360, timeout, Easing.SpringOut);
-            //  image.RotationY = 0;
+            imageOne.Opacity = 0;
+            await imageOne.FadeTo(1, 2000);
+            uint timeout = 5000;
+            imageOne.RotationY = -360;
+            await imageOne.RotateYTo(-180, timeout, Easing.SpringOut);
         }
 
         private void animated()
@@ -207,7 +207,7 @@ namespace VeloNSK
         private void Slider_Right_Function() //Перелистывание слайдера на право
         {
             if (counter >= image_string.Length) counter = 0;
-            animated();
+
             Slid0.Source = new UriImageSource
             {
                 CachingEnabled = true,
@@ -255,11 +255,11 @@ namespace VeloNSK
                 CacheValidity = new System.TimeSpan(2, 0, 0, 0),
                 Uri = new System.Uri(image_string[counter5++])
             };
+            animated();
         }
 
         private void Slider_Left_Function()//Перелистывание слайдера на лево
         {
-            animated();
             if (counter <= 0) counter = image_string.Length;
 
             Slid0.Source = new UriImageSource
@@ -309,6 +309,7 @@ namespace VeloNSK
                 Uri = new System.Uri(image_string[--counter5])
             };
             if (counter5 <= 0) counter5 = image_string.Length;
+            animated();
         }
     }
 }

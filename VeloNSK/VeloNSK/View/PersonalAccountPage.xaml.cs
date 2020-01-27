@@ -18,11 +18,10 @@ namespace VeloNSK.View
     public partial class PersonalAccountPage : ContentPage
     {
         private RegistrationUsersService registrationUsersService = new RegistrationUsersService();
-        private LoginUsersService loginUsersService = new LoginUsersService();
         private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
         private ConnectClass connectClass = new ConnectClass();
-        private links picture_lincs = new links();
         private Animations animations = new Animations();
+        private links picture_lincs = new links();
         private bool animate;
         private int ID;
 
@@ -41,13 +40,11 @@ namespace VeloNSK.View
                 Profile_Lable.Text = "Мой профиль";
             }
 
-            User_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
-            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
-            Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
-            Redact_Button.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "redact_user.jpg");
-
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
+            Redact_Button.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "redact_user.jpg");
+            Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
 
             Head_Button.Clicked += async (s, e) =>
             {
@@ -83,25 +80,37 @@ namespace VeloNSK.View
 
         private async Task Get(int id)
         {
-            InfoUser loginUsers = await registrationUsersService.Get_user_id(id);
-            IEnumerable<UserHelth> userHelths = await registrationUsersService.get_hels_status();
-            ID = loginUsers.IdUsers;
-            if (loginUsers.Isman) { Pol_Lable.Text += "Мужской"; }
-            else { Pol_Lable.Text += "Женский"; }
-            userHelths = userHelths.Where(p => p.IdHealth == loginUsers.IdHelth);
-            foreach (UserHelth userHelth in userHelths)
+            try
             {
-                StatusHels_Lable.Text += userHelth.NameHealth;
+                InfoUser loginUsers = await registrationUsersService.Get_user_id(id);
+                IEnumerable<UserHelth> userHelths = await registrationUsersService.get_hels_status();
+                ID = loginUsers.IdUsers;
+                if (loginUsers.Isman) { Pol_Lable.Text += "Мужской"; }
+                else { Pol_Lable.Text += "Женский"; }
+                userHelths = userHelths.Where(p => p.IdHealth == loginUsers.IdHelth);
+                foreach (UserHelth userHelth in userHelths)
+                {
+                    StatusHels_Lable.Text += userHelth.NameHealth;
+                }
+                if (loginUsers.Logo != null)
+                {
+                    User_Image.Source = new UriImageSource
+                    {
+                        CachingEnabled = true,
+                        CacheValidity = new System.TimeSpan(2, 0, 0, 0),
+                        Uri = new Uri(loginUsers.Logo)
+                    };
+                }
+                else
+                {
+                    User_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "nophotouser.png");
+                }
+                FIO_Lable.Text += loginUsers.Fam + " " + loginUsers.Name + " " + loginUsers.Patronimic;
+                Yars_Lable.Text += loginUsers.Years;
+                Email_Lable.Text += loginUsers.Email;
+                Login_Lable.Text += loginUsers.Login;
             }
-            FIO_Lable.Text += loginUsers.Fam + " " + loginUsers.Name + " " + loginUsers.Patronimic;
-            Yars_Lable.Text += loginUsers.Years;
-            Email_Lable.Text += loginUsers.Email;
-            Login_Lable.Text += loginUsers.Login;
-            User_Image.Source = new UriImageSource
-            {
-                CachingEnabled = false,
-                Uri = new System.Uri(loginUsers.Logo)
-            };
+            catch { }
         }
     }
 }

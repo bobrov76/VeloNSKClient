@@ -6,7 +6,7 @@
              xmlns:dg="clr-namespace:Xamarin.Forms.DataGrid;assembly=Xamarin.Forms.DataGrid"
              xmlns:Behaviors="clr-namespace:VeloNSK.HelpClass.Validate"
              mc:Ignorable="d"
-             x:Class="VeloNSK.View.Admin.Participations.ParticipationsPage">
+             x:Class="VeloNSK.View.Admin.Participations.ParticipationsPage" SizeChanged="SizeChanged">
     <!--Стили-->
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -59,7 +59,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
+            <BoxView x:Name="Hend_BoxView" Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
             <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
             <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
             <Button x:Name="Back_Button" Text = "Back" Margin="10,10,0,10" Style="{StaticResource Head_Button}" />
@@ -82,20 +82,16 @@
                     <RowDefinition Height="50"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="210" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
-                <Button Text="Добавить" x:Name="btnAddRecord" Grid.Column="1" Margin="10,0,10,10" />
-                <Button Text="Импортировать"  Grid.Column="2" x:Name="btnImport" Margin="0,0,10,10" />
-                <Button Text="Экспортировать"  Grid.Column="3" x:Name="btnAddExport" Margin="0,0,10,10" />
+                <Button Text="Манипулирование данными" Grid.Column="1" x:Name="btnAddRecord" Margin="0,0,0,15" />
             </Grid>
             <Grid Grid.Row="2">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
+                        <RowDefinition Height="45" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>

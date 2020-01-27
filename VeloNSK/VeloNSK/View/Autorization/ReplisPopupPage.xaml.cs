@@ -22,24 +22,30 @@ namespace VeloNSK.View.Autorization
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ReplisPopupPage : PopupPage
     {
-        links picture_lincs = new links();
-        MessagingAPI messagingAPI = new MessagingAPI();
-        ConnectClass connectClass = new ConnectClass();
-        RegularValidate validation = new RegularValidate();
+        private links picture_lincs = new links();
+        private MessagingAPI messagingAPI = new MessagingAPI();
+        private ConnectClass connectClass = new ConnectClass();
+        private RegularValidate validation = new RegularValidate();
+
         public ReplisPopupPage(string ID)
         {
-            InitializeComponent();
-            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы            
+            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
+            InitializeComponent();
             OctocatImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "replispasswd.png");
             CloseImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "close_circle_button.png");
             GetMasageButton.Clicked += (s, e) => SetMailAsync(ID);
         }
-        public async Task Connect_ErrorAsync() { await Navigation.PushModalAsync(new ErrorConnectPage()); }
+
+        public async Task Connect_ErrorAsync()
+        {
+            await Navigation.PushModalAsync(new ErrorConnectPage());
+        }
+
         private async Task SetMailAsync(string ID)//Отправка письма
         {
-            if (ID!=null) 
+            if (ID != null)
             {
                 if (!validation.Vadidation(MasageEditor.Text, @"(\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*)"))
                 {
@@ -51,9 +57,10 @@ namespace VeloNSK.View.Autorization
                 else
                 {
                     await DisplayAlert("Ошибка", "E-mail введен неверно", "Ok");
-                } 
+                }
             }
         }
+
         protected override void OnAppearingAnimationBegin()
         {
             base.OnAppearingAnimationBegin();
@@ -68,7 +75,6 @@ namespace VeloNSK.View.Autorization
 
                 GetMasageButton.Scale = 1;
                 GetMasageButton.Opacity = 1;
-
 
                 return;
             }
@@ -97,7 +103,6 @@ namespace VeloNSK.View.Autorization
                 (new Func<Task>(async () =>
                 {
                     await Task.Delay(200);
-
                 }))());
 
             await Task.WhenAll(

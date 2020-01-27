@@ -3,29 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:forms="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              x:Class="VeloNSK.ErrorConnectPage" BackgroundColor="#4385f5">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label Text="Интернет соединение отсутствует !!!" 
+        <StackLayout Grid.Row="1" VerticalOptions="End">
+            <Image x:Name="Error_Image" WidthRequest="200" HeightRequest="200" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Label Text="Интернет соединение отсутствует !!!"
                VerticalOptions="Center"
-               HorizontalOptions="Center" 
-               FontSize="Title" 
+               HorizontalOptions="Center"
+               FontSize="Medium"
                TextColor="White"
                Margin="0,10,0,0"
-               Grid.ColumnSpan="3"/>
-       
-
+               Grid.ColumnSpan="3" />
+        </StackLayout>
     </Grid>
 </ContentPage>

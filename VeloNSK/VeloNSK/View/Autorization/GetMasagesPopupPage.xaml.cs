@@ -24,10 +24,9 @@ namespace VeloNSK
 
         public GetMasagesPopupPage()
         {
-            InitializeComponent();
-
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
+            InitializeComponent();
 
             OctocatImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "masage_picture.png");
             CloseImage.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "close_circle_button.png");
@@ -42,6 +41,7 @@ namespace VeloNSK
         private void SetMail()//Отправка письма
         {
             messagingAPI.SendEmail("velo.nsk2020@mail.ru", "Письмо от пользователя", MasageEditor.Text);
+            CloseAllPopup();
         }
 
         protected override void OnAppearingAnimationBegin()

@@ -21,11 +21,10 @@ namespace VeloNSK.View.Info
         private ConnectClass connectClass = new ConnectClass();
         private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
         private HttpClient _client;
+        private string pdfUrl = "";
 
         public InfoUsersPage()
         {
-            InitializeComponent();
-
             _client = new HttpClient();
 
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
@@ -33,7 +32,18 @@ namespace VeloNSK.View.Info
 
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
-            var pdfUrl = "http://90.189.158.10/folders/TrebovanieOfUsers.pdf";
+            InitializeComponent();
+            LoadingAsync();
+            Save_Button.Clicked += async (s, e) => { await DownloadAndSaveImage(pdfUrl); };
+            Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
+        }
+
+        private async Task LoadingAsync()
+        {
+            Main_RowDefinition_Two.Height = 0;
+            Main_RowDefinition_Activiti.Height = new GridLength(1, GridUnitType.Star);
+            activityIndicator.IsRunning = true;
+            string pdfUrl = "http://90.189.158.10/folders/TrebovanieOfUsers.pdf";
             var googleUrl = "http://drive.google.com/viewerng/viewer?embedded=true&url=";
             if (Device.RuntimePlatform == Device.iOS)
             {
@@ -43,8 +53,10 @@ namespace VeloNSK.View.Info
             {
                 InfoUser_WebView.Source = new UrlWebViewSource() { Url = googleUrl + pdfUrl };
             }
-            Save_Button.Clicked += async (s, e) => { await DownloadAndSaveImage(pdfUrl); };
-            Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
+            await Task.Delay(500);
+            Main_RowDefinition_Two.Height = new GridLength(1, GridUnitType.Star);
+            Main_RowDefinition_Activiti.Height = 0;
+            activityIndicator.IsRunning = false;
         }
 
         public async Task Connect_ErrorAsync()

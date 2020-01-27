@@ -36,13 +36,14 @@ namespace VeloNSK
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
             Fingers();
+            Get_User();
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
-            Button_del.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Del_text.png");
-            One_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
-            Two_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
-            Three_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
-            Fore_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
+            //Button_del.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Del_text.png");
+            //One_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
+            //Two_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
+            //Three_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
+            //Fore_Image.Source = ImageSource.FromResource(picture_lincs.LinksResourse() + "Circle_PIN.png");
 
             Exit_Button.Clicked += async (s, e) =>
             {
@@ -71,6 +72,12 @@ namespace VeloNSK
         }
 
         private int count_click = 0;
+
+        public async Task Get_User()
+        {
+            InfoUser loginUsers = await loginUsersService.Get(App.Current.Properties["token"].ToString());
+            PIN_Lable.Text = loginUsers.Name + " " + loginUsers.Patronimic;
+        }
 
         private void PIN_Validate(string text)
         {
@@ -154,13 +161,10 @@ namespace VeloNSK
         {
             await Task.Delay(2000);
             var sss = new System.Threading.CancellationToken();
-            var scan = await CrossFingerprint.Current.AuthenticateAsync("", sss);
+            var scan = await CrossFingerprint.Current.AuthenticateAsync("Приложите палец к сканеру отпечатков", sss);
             if (scan.Authenticated)
             {
-                if (PIN_Code == App.Current.Properties["pin_code"].ToString())
-                {
-                    await Login_Async();
-                }
+                await Login_Async();
             }
         }
 
@@ -212,7 +216,6 @@ namespace VeloNSK
         {
             double width = size_form.GetWidthSize();
             double height = size_form.GetHeightSize();
-            DisplayAlert("", width.ToString(), "ok");
             if (width > height)
             {
                 outerStack.Orientation = StackOrientation.Horizontal;

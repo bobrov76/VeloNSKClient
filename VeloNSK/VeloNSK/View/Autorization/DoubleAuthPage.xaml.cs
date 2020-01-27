@@ -39,7 +39,6 @@ namespace VeloNSK.View.Autorization
         public DoubleAuthPage(int ID, string status)
         {
             InitializeComponent();
-            DisplayAlert("", ID.ToString(), "Ok");
             switch (status)
             {
                 case "ReplisPasswd": Name_Lable.Text = "Изменение пароля"; PinCode_Entry.IsVisible = false; break;

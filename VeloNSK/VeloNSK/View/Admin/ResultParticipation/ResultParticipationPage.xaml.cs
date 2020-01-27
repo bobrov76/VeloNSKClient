@@ -31,6 +31,7 @@ namespace VeloNSK.View.Admin.ResultParticipation
         private bool animate;
         private bool alive = true;
         private DateTime SelectedDate;
+        private DateTime ID_Time;
 
         public ResultParticipationPage()
         {
@@ -81,8 +82,8 @@ namespace VeloNSK.View.Admin.ResultParticipation
                         }
                         break;
 
-                    case "Сформировать отчет":
-                        await Navigation.PushModalAsync(new ReportsPage());
+                    case "Сформировать результирующий отчет":
+                        await Otchet(1);
                         break;
 
                     case "Статистика":
@@ -103,16 +104,22 @@ namespace VeloNSK.View.Admin.ResultParticipation
 
             PoiskStatus.TextChanged += async (s, e) =>
             {
-                await Poisk("PoiskStatus");
+                await Poisk("PoiskMesto");
             };
 
-            PoiskDate.MinimumDate = DateTime.Today;
-
-            PoiskDate.DateSelected += async (s, e) =>
+            ItogTime_Entry.TextChanged += async (s, e) =>
             {
-                if (e.NewDate != null)
+                if (ItogTime_Entry.Text.Length == 11)
                 {
-                    SelectedDate = e.NewDate;
+                    string a = ItogTime_Entry.Text;
+                    int hour = Convert.ToInt32(a.Remove(2, 9));
+                    int min = Convert.ToInt32(a.Remove(0, 4).Remove(0, 5));
+                    int sec = Convert.ToInt32(a.Remove(0, 6).Remove(2, 3));
+                    int milisec = Convert.ToInt32(a.Remove(0, 9));
+                    DateTime dateTime = DateTime.Now;
+                    TimeSpan ts = new TimeSpan(1, hour, min, sec, milisec);
+                    dateTime = dateTime.Date + ts;
+                    ID_Time = dateTime;
                     await Poisk("PoiskDate");
                 }
             };
@@ -174,27 +181,27 @@ namespace VeloNSK.View.Admin.ResultParticipation
                            r.Mesto,
                            d.NameDistantion,
                            i.Login,
-                           r.IdResultParticipation
+                           c.Date,
+                           p.IdStatusVerification,
+                           r.IdResultParticipation,
                        };
 
-            //switch (filtr)
-            //{
-            //    case "PoiskLogin": info = info.Where(p => p.Login == PoiskLogin.Text || p.Login.StartsWith(PoiskLogin.Text)); break;
-            //    case "PoiskNameDistans": info = info.Where(p => p.NameDistantion == PoiskNameDistans.Text || p.NameDistantion.StartsWith(PoiskNameDistans.Text)); break;
-            //    case "PoiskStatus":
-            //        if (PoiskStatus.Text.Substring(0, 1).ToString() == "T" || PoiskStatus.Text.Substring(0, 1).ToString() == "t")
-            //        {
-            //            info = info.Where(p => p.IdStatusVerification == true);
-            //        }
-            //        else if (PoiskStatus.Text.Substring(0, 1).ToString() == "F" || PoiskStatus.Text.Substring(0, 1).ToString() == "f")
-            //        {
-            //            info = info.Where(p => p.IdStatusVerification == false);
-            //        }
+            switch (filtr)
+            {
+                case "PoiskLogin": info = info.Where(p => p.Login == PoiskLogin.Text || p.Login.StartsWith(PoiskLogin.Text)); break;
+                case "PoiskNameDistans": info = info.Where(p => p.NameDistantion == PoiskNameDistans.Text || p.NameDistantion.StartsWith(PoiskNameDistans.Text)); break;
+                case "PoiskMesto":
+                    string str = PoiskStatus.Text;
+                    int num;
+                    bool isNum = int.TryParse(str, out num);
+                    if (isNum)
+                        info = info.Where(p => p.Mesto == Convert.ToInt32(str));
+                    else
+                        PoiskStatus.Text = "";
+                    break;
 
-            //        break;
-
-            //    case "PoiskDate": info = info.Where(p => p.Date == SelectedDate); break;
-            //}
+                case "PoiskDate": info = info.Where(p => p.Date == ID_Time); break;
+            }
             var res = info.ToList();
             if (res.Count != 0)
             {
@@ -262,12 +269,12 @@ namespace VeloNSK.View.Admin.ResultParticipation
                 string obj = e.SelectedItem.ToString();
                 obj = obj.Substring(obj.LastIndexOf(',') + 1).Replace("IdResultParticipation = ", string.Empty).Replace("}", string.Empty);
 
-                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Подробнее", "Обновить данные", "Удалить данные");
+                string res = await DisplayActionSheet("Выберите операцию", "Отмена", null, "Обновить данные", "Удалить данные");
                 switch (res)
                 {
-                    case "Подробнее":
-                        // await PopupNavigation.Instance.PushAsync(new MoreInfoParticipationsPage());
-                        break;
+                    // case "Подробнее":
+                    // await PopupNavigation.Instance.PushAsync(new MoreInfoParticipationsPage());
+                    //    break;
 
                     case "Обновить данные":
                         await Navigation.PushModalAsync(new AddResultParticipationPagePage(Convert.ToInt32(obj)), animate);
@@ -310,8 +317,8 @@ namespace VeloNSK.View.Admin.ResultParticipation
         private async Task DownloadSimple()
         {
             HttpClient client = getClientServise.GetClient();
-            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/TemplateResultpartisipations.xlsx");
-            await response.SaveToLocalFolderAsync("Шаблон для дистанций.xlsx");
+            var response = await client.GetStreamAsync("http://90.189.158.10/Simple/ResultPatisipantSimple.xlsx");
+            await response.SaveToLocalFolderAsync("Шаблон для экспорта информации о итогах соревнования" + $"{DateTime.Now.ToString("ddMMyyyyhhmmss")}" + ".xlsx");
             await DisplayAlert("", "Шаблон успешно сохранен", "Ok");
         }
 
@@ -326,7 +333,6 @@ namespace VeloNSK.View.Admin.ResultParticipation
                 string result = await client.GetStringAsync("http://90.189.158.10/api/Resultpartisipations/ExportParticipation");
                 string path = JsonConvert.DeserializeObject<string>(result);
                 path = path.Replace(" ", string.Empty);
-                DisplayAlert("", path, "ok");
                 var response = await client.GetStreamAsync(path);
                 var filePath = await response.SaveToLocalFolderAsync($"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}.xlsx");
 
@@ -335,9 +341,58 @@ namespace VeloNSK.View.Admin.ResultParticipation
                 Main_RowDefinition_Activity.Height = 0;
                 activityIndicator.IsRunning = false;
                 await DisplayAlert("", "Импорт успешно выполнен", "Ok");
-                await DisplayAlert("", filePath, "Ok");
             }
             catch { }
+        }
+
+        private async Task Otchet(int id_pat)
+        {
+            if (id_pat != 0)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StringContent("0"), "\"Id\"");
+                content.Add(new StringContent("criate_itog"), "\"masage\"");
+                content.Add(new StringContent(id_pat.ToString()), "\"Id_patisipant\"");
+                var httpClient = new HttpClient();
+                var servere_adres = "http://90.189.158.10/api/Doxs";
+                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                var url = await httpResponseMasage.Content.ReadAsStringAsync();
+                var response = await httpClient.GetStreamAsync(url);
+                await response.SaveToLocalFolderAsync("Итог соревнования" + $"{DateTime.Now.ToString("dd.MM.yyyy_hh.mm.ss")}" + ".docx");
+                await DisplayAlert("", "Инофрмация сохранена", "Ok");
+            }
+        }
+
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+
+        private new void SizeChanged(object sender, EventArgs e)
+        {
+            double width = size_form.GetWidthSize();
+            double height = size_form.GetHeightSize();
+            if (width > height)
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 0;
+                    Main_RowDefinition_Three.Height = 0;
+                    Head_Image.IsVisible = false;
+                    Head_Lable.IsVisible = false;
+                    Back_Button.IsVisible = false;
+                    Hend_BoxView.IsVisible = false;
+                }
+            }
+            else
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 70;
+                    Main_RowDefinition_Three.Height = 40;
+                    Head_Image.IsVisible = true;
+                    Head_Lable.IsVisible = true;
+                    Back_Button.IsVisible = true;
+                    Hend_BoxView.IsVisible = true;
+                }
+            }
         }
     }
 }

@@ -58,7 +58,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <BoxView Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
+            <BoxView x:Name="Hend_BoxView" Grid.ColumnSpan="3" BackgroundColor="#0079d8" />
             <Image Grid.Column="2" x:Name="Head_Image"  Aspect="Fill" />
             <Label Grid.ColumnSpan="3" x:Name="Head_Lable" Text="VeloNSK" Style="{StaticResource Head_Lable}" />
             <Button x:Name="Head_Button" Text = "Back" Margin="10,10,0,10" Style="{StaticResource Head_Button}" />

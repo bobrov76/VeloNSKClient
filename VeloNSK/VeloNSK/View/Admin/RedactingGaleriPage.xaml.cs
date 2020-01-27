@@ -18,42 +18,46 @@ using Xamarin.Forms.Xaml;
 namespace VeloNSK.View.Admin
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    
     public partial class RedactingGaleriPage : ContentPage
     {
-        HttpClient _client;
-        links picture_lincs = new links();
-        ConnectClass connectClass = new ConnectClass();
+        private HelpClass.Style.Size size_form = new HelpClass.Style.Size();
+        private HttpClient _client;
+        private links picture_lincs = new links();
+        private ConnectClass connectClass = new ConnectClass();
         private MediaFile _mediaFile;
-        string[] images;
+        private string[] images;
+
         public RedactingGaleriPage()
         {
-            InitializeComponent();
-            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы            
+            if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
+            InitializeComponent();
 
             Fon.BackgroundImageSource = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
-
+            image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
 
             Save_More_Button.Clicked += async (s, e) =>
             {
-                if (images.Length!=0)
+                if (images.Length != 0)
                 {
                     for (int i = 0; i < images.Length; i++)
                     {
                         await DownloadAndSaveImage(images[i]);
                     }
-                }               
-
+                }
             };
+
             Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
             Save_NewPicture_Button.Clicked += async (s, e) => { await getPhotoingaleriAsync(); };
-            _client = new HttpClient(); 
+            _client = new HttpClient();
             OnAppearing();
         }
-        public async Task Connect_ErrorAsync() { await Navigation.PopModalAsync(); } //Переход на страницу с ошибкой интернет соединения
 
+        public async Task Connect_ErrorAsync()
+        {
+            await Navigation.PopModalAsync();
+        } //Переход на страницу с ошибкой интернет соединения
 
         // выбор фото
         private async Task getPhotoingaleriAsync()
@@ -63,21 +67,22 @@ namespace VeloNSK.View.Admin
                 _mediaFile = await CrossMedia.Current.PickPhotoAsync();
                 if (_mediaFile == null)
                 {
+                    await DisplayAlert("Ошибка", "Фото не выбрано", "Выбрать");
                     return;
-                }                 
-
-                var content = new MultipartFormDataContent();
-                content.Add(new StreamContent(_mediaFile.GetStream()), "\"files\"", $"\"{_mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf(@"\")))}\"");
-                content.Add(new StringContent(""), "\"Id\"");
-                var httpClient = new HttpClient();
-                var servere_adres = "http://90.189.158.10/api/Folder/galeri";
-                var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
-                var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
-                OnAppearing();
-            } 
+                }
+                else
+                {
+                    var content = new MultipartFormDataContent();
+                    content.Add(new StreamContent(_mediaFile.GetStream()), "\"files\"", $"\"{_mediaFile.Path.Remove(0, (_mediaFile.Path.LastIndexOf(@"\")))}\"");
+                    content.Add(new StringContent(""), "\"Id\"");
+                    var httpClient = new HttpClient();
+                    var servere_adres = "http://90.189.158.10/api/Folder/galeri";
+                    var httpResponseMasage = await httpClient.PostAsync(servere_adres, content);
+                    var url_image = await httpResponseMasage.Content.ReadAsStringAsync();
+                    OnAppearing();
+                }
+            }
         }
-
-
 
         public async void OnAppearing()
         {
@@ -112,8 +117,7 @@ namespace VeloNSK.View.Admin
             }
         }
 
-
-        async Task<string[]> GetImageListAsync()
+        private async Task<string[]> GetImageListAsync()
         {
             try
             {
@@ -145,5 +149,34 @@ namespace VeloNSK.View.Admin
             }
         }
 
+        private new void SizeChanged(object sender, EventArgs e)
+        {
+            double width = size_form.GetWidthSize();
+            double height = size_form.GetHeightSize();
+            if (width > height)
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 0;
+                    Main_RowDefinition_Fore.Height = 0;
+                    Head_Image.IsVisible = false;
+                    Head_Lable.IsVisible = false;
+                    Head_Button.IsVisible = false;
+                    Hend_BoxView.IsVisible = false;
+                }
+            }
+            else
+            {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 70;
+                    Main_RowDefinition_Fore.Height = 40;
+                    Head_Image.IsVisible = true;
+                    Head_Lable.IsVisible = true;
+                    Head_Button.IsVisible = true;
+                    Hend_BoxView.IsVisible = true;
+                }
+            }
+        }
     }
 }

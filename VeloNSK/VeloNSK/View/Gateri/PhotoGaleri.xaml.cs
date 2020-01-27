@@ -27,12 +27,13 @@ namespace VeloNSK.View.Gateri
         public PhotoGaleri()
         {
             InitializeComponent();
-
             if (!connectClass.CheckConnection()) { Connect_ErrorAsync(); }//Проверка интернета при загрузке формы
             CrossConnectivity.Current.ConnectivityChanged += (s, e) => { if (!connectClass.CheckConnection()) Connect_ErrorAsync(); };
 
             image_fon.Source = ImageSource.FromResource(picture_lincs.GetFon());
             Head_Image.Source = ImageSource.FromResource(picture_lincs.GetLogo());
+            _client = new HttpClient();
+            LoadingAsync();
 
             Save_More_Button.Clicked += async (s, e) =>
             {
@@ -42,10 +43,6 @@ namespace VeloNSK.View.Gateri
                 }
             };
             Head_Button.Clicked += async (s, e) => { await Navigation.PopModalAsync(); };
-
-            _client = new HttpClient();
-            LoadingAsync();
-            OnAppearing();
         }
 
         public async Task Connect_ErrorAsync()
@@ -58,13 +55,14 @@ namespace VeloNSK.View.Gateri
             Main_RowDefinition_Two.Height = 0;
             RowDefinitionActivity.Height = new GridLength(1, GridUnitType.Star);
             activityIndicator.IsRunning = true;
-            await Task.Delay(3000);
+            await OnAppearing();
+            await Task.Delay(400);
             Main_RowDefinition_Two.Height = new GridLength(1, GridUnitType.Star);
             RowDefinitionActivity.Height = 0;
             activityIndicator.IsRunning = false;
         }
 
-        public async void OnAppearing()
+        public async Task OnAppearing()
         {
             base.OnAppearing();
             Thickness posLeft = new Thickness(5, 5, 5, 15);
@@ -104,11 +102,7 @@ namespace VeloNSK.View.Gateri
                 string result = await _client.GetStringAsync(requestUri);
                 return JsonConvert.DeserializeObject<string[]>(result);
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"\tERROR: {ex.Message}");
-            }
-
+            catch { }
             return null;
         }
 
@@ -122,25 +116,36 @@ namespace VeloNSK.View.Gateri
                     await DisplayAlert("", filePath, "Ok");
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"DownloadAndSaveImage Exception: {ex}");
-            }
+            catch { }
         }
 
         private new void SizeChanged(object sender, EventArgs e)
         {
-            if (size_form.GetHeightSize() < size_form.GetWidthSize())
+            double width = size_form.GetWidthSize();
+            double height = size_form.GetHeightSize();
+            if (width > height)
             {
-                Main_RowDefinition_Ziro.Height = 0;
-                Main_RowDefinition_Fore.Height = 0;
-                Main_RowDefinition_One.Height = 0;
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 0;
+                    Main_RowDefinition_Fore.Height = 0;
+                    Head_Image.IsVisible = false;
+                    Head_Lable.IsVisible = false;
+                    Head_Button.IsVisible = false;
+                    Hend_BoxView.IsVisible = false;
+                }
             }
             else
             {
-                Main_RowDefinition_Ziro.Height = 70;
-                Main_RowDefinition_Fore.Height = 60;
-                Main_RowDefinition_One.Height = 30;
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    Main_RowDefinition_Ziro.Height = 70;
+                    Main_RowDefinition_Fore.Height = 40;
+                    Head_Image.IsVisible = true;
+                    Head_Lable.IsVisible = true;
+                    Head_Button.IsVisible = true;
+                    Hend_BoxView.IsVisible = true;
+                }
             }
         }
     }

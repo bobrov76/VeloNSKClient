@@ -44,6 +44,7 @@
             <RowDefinition Height="70" x:Name="Main_RowDefinition_Ziro" />
             <RowDefinition Height="60" x:Name="Main_RowDefinition_One" />
             <RowDefinition Height="*" x:Name="Main_RowDefinition_Two" />
+            <RowDefinition Height="0" x:Name="Main_RowDefinition_Activiti" />
             <RowDefinition Height="30" x:Name="Main_RowDefinition_Fore" />
         </Grid.RowDefinitions>
         <Image x:Name="image_fon" Grid.RowSpan="4" Aspect="Fill" />
@@ -76,9 +77,9 @@
         <!--Блок изображений-->
 
         <WebView Grid.Row="2" x:Name="InfoUser_WebView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-
+        <ActivityIndicator Grid.Row="3"  x:Name = "activityIndicator" IsRunning="False" VerticalOptions =" Center " HorizontalOptions =" Center " Color = "Blue" />
         <!--Подвал-->
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
